@@ -1,0 +1,109 @@
+default_stages:
+  - commit
+  - push
+
+repos:
+  # the default pre-commit hooks, we use most of them
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 'v4.2.0'
+    hooks:
+      # check whether the files parsed a valid python
+      - id: check-ast
+      # check if symlinks point to nothing
+      - id: check-symlinks
+      # forbid files which have a UTF-8 byte-order marker
+      - id: fix-byte-order-marker
+      # for filenames that would conflict in case-insensitive fs (e.g. HFS+, FAT)
+      - id: check-case-conflict
+      # check all json file syntax
+      - id: check-json
+      # check all yaml file syntax
+      - id: check-yaml
+      # check all toml file syntax
+      - id: check-toml
+      # ensure graceful EoL in each file.
+      - id: end-of-file-fixer
+      # ensure no trailing whitespaces exist
+      - id: trailing-whitespace
+      # fixed mixed line endings
+      - id: mixed-line-ending
+      # check if the code is it valid Python
+      - id: check-ast
+      # Check for debugger imports and py37+ breakpoint() calls
+      # in python source.
+      - id: debug-statements
+      # this detects private keys and avoids them being committed
+      - id: detect-private-key
+      # sort file contents
+      - id: file-contents-sorter
+      # check json format and make it pretty
+      - id: pretty-format-json
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 2.1.6  # or specific git tag
+    hooks:
+      - id: fasterer
+      - id: git-check  # Configure in .gitattributes
+      - id: markdownlint # Configure in .mdlrc
+      - id: shfmt
+        args: [ -i 2 ]
+  # ensure code is black compliant
+  - repo: https://github.com/psf/black
+    rev: '22.3.0'
+    hooks:
+      - id: black
+  # statically populates the `known_third_party` config of `isort`
+  - repo: https://github.com/asottile/seed-isort-config
+    rev: 'v2.2.0'
+    hooks:
+      - id: seed-isort-config
+  # fetch the isort package
+  - repo: https://github.com/PyCQA/isort
+    rev: '5.10.1'
+    hooks:
+      - id: isort
+  # add autoflakes
+  - repo: https://github.com/myint/autoflake
+    rev: v1.4
+    hooks:
+      - id: autoflake
+        args: [ '--in-place', '--remove-all-unused-imports', '--ignore-init-module-imports']
+  # run flake8 and make sure it passes
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: '3.9.2'
+    hooks:
+      - id: flake8
+  # add sql-fluff
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: '0.13.0'
+    hooks:
+      # add the linter
+      - id: sqlfluff-lint
+      # add the extra step used for local fixes
+        # we add here any potential additional dependencies that we might have - currently none.
+        # additional_dependencies: []
+      - id: sqlfluff-fix
+        # Arbitrary arguments to show an example
+        # args: [--rules, "L003,L014"]
+        # we add here any potential additional dependencies that we might have - currently none.
+        # additional_dependencies: []
+  # add bandit
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
+    rev: 'v1.0.6'
+    hooks:
+      - id: python-bandit-vulnerability-check
+        args: [--exclude ./venv]
+  # add mypy
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: 'v0.950'
+    hooks:
+      - id: mypy
+        args: ["--show-error-codes", "--ignore-missing-imports"]
+        additional_dependencies: [ types-requests ]
+  # use local repository hooks so we can discover libraries.
+  - repo: local
+    hooks:
+    - id: pylint
+      name: pylint
+      entry: pylint
+      language: python
+      types: [python]
