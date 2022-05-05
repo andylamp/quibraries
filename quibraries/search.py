@@ -6,7 +6,7 @@ from .search_helpers import SearchAPI
 
 
 class Search:
-    """Class for wrapping the libraries.io API for platform, project, repo, and user GET actions"""
+    """Class for wrapping the libraries.io API for platform, project, repo, and user GET actions."""
 
     def __init__(self, api_key: str = ""):
         # create the regular one
@@ -17,7 +17,7 @@ class Search:
         Return a list of supported package managers.
 
         Returns:
-            List of dicts of platforms with platform info from libraries.io.
+            (Any): List of dicts of platforms with platform info from libraries.io.
         """
 
         return SearchAPI.call("platforms", self.session)
@@ -27,10 +27,11 @@ class Search:
         Return information about a project and its versions from a platform (e.g. PyPI).
 
         Args:
-            platforms: package manager (e.g. "pypi").
-            name: project name.
+            platforms (str): package manager (e.g. "pypi").
+            name (str): project name.
+
         Returns:
-            List of dictionaries with information about the project from libraries.io.
+            (Any): List of dictionaries with information about the project from libraries.io.
         """
         return SearchAPI.call("project", self.session, platforms, name)
 
@@ -41,11 +42,12 @@ class Search:
         Returns the latest version info.
 
         Args:
-            platforms: package manager (e.g. "pypi").
-            project: project name.
-            version: (optional) project version
+            platforms (str): package manager (e.g. "pypi").
+            project (str): project name.
+            version (str): (optional) project version.
+
         Returns:
-            Dict of dependencies for a version of a project from libraries.io.
+            (Any): Dict of dependencies for a version of a project from libraries.io.
         """
 
         return SearchAPI.call("project_dependencies", self.session, platforms, project, version=version)
@@ -55,11 +57,12 @@ class Search:
         Get projects that have at least one version that depends on a given project.
 
         Args:
-            platforms: package manager (e.g. "pypi").
-            project: project name
-            version: project version
+            platforms (str): package manager (e.g. "pypi").
+            project (str): project name.
+            version (str): project version.
+
         Returns:
-            List of dicts project dependents from libraries.io.
+            (Any): List of dicts project dependents from libraries.io.
         """
 
         return SearchAPI.call("project_dependents", self.session, platforms, project, version=version)
@@ -69,10 +72,11 @@ class Search:
         Get repositories that depend on a given project.
 
         Args:
-            platforms: package manager (e.g. "pypi")
-            project: project name
+            platforms (str): package manager (e.g. "pypi").
+            project (str): project name.
+
         Returns:
-            List of dicts of dependent repositories from libraries.io.
+            (Any): List of dicts of dependent repositories from libraries.io.
         """
 
         return SearchAPI.call("project_dependent_repositories", self.session, platforms, project)
@@ -82,10 +86,11 @@ class Search:
         Get users that have contributed to a given project.
 
         Args:
-            platforms: package manager
-            project: project name
+            platforms (str): package manager.
+            project (str): project name.
+
         Returns:
-            List of dicts of project contributor info from libraries.io.
+            (Any): List of dicts of project contributor info from libraries.io.
         """
 
         return SearchAPI.call("project_contributors", self.session, platforms, project)
@@ -95,10 +100,11 @@ class Search:
         Get breakdown of SourceRank score for a given project.
 
         Args:
-            platforms: package manager
-            project: project name
+            platforms (str): package manager.
+            project (str): project name.
+
         Returns:
-            Dict of sourcerank info response from libraries.io.
+            (Any): Dict of sourcerank info response from libraries.io.
         """
 
         return SearchAPI.call("project_sourcerank", self.session, platforms, project)
@@ -108,10 +114,11 @@ class Search:
         Get breakdown of usage for a given project.
 
         Args:
-            platforms: package manager
-            project: project name
+            platforms (str): package manager.
+            project (str): project name.
+
         Returns:
-            Dict with info about usage from libraries.io.
+            (Any): Dict with info about usage from libraries.io.
         """
 
         return SearchAPI.call("project_usage", self.session, platforms, project)
@@ -119,18 +126,19 @@ class Search:
     def project_search(self, **kwargs):
         """
         Search for projects.
+
         Args - keywords only:
             keywords (str):  required argument: keywords to search
             languages (str): optional programming languages to filter
             licenses (str): license type to filter
-            platforms (str):, platforms to filter
+            platforms (str): platforms to filter
 
-            sort str: (optional) one of rank, stars,
+            sort (str): (optional) one of rank, stars,
                 dependents_count, dependent_repos_count,
                 latest_release_published_at, contributions_count, created_at
 
         Returns:
-            List of dicts of project info from libraries.io.
+            (Any): List of dicts of project info from libraries.io.
         """
         kwargs.setdefault("iterated", False)
         return SearchAPI.call("special_project_search", self.session, **kwargs)
@@ -140,11 +148,12 @@ class Search:
         Return information about a repository and its versions.
 
         Args:
-            host: host provider name (e.g. GitHub)
-            owner: owner
-            repo: repo
+            host (str): host provider name (e.g. GitHub).
+            owner (str): owner.
+            repo (str): the repository name.
+
         Returns:
-            List of dicts of info about a repository from libraries.io.
+            (Any): List of dicts of info about a repository from libraries.io.
         """
 
         return SearchAPI.call("repository", self.session, host, owner, repo)
@@ -154,11 +163,12 @@ class Search:
         Return information about a repository's dependencies.
 
         Args:
-            host: host provider name (e.g. GitHub)
-            owner: owner
-            repo: repo
+            host (str): host provider name (e.g. GitHub).
+            owner (str): owner.
+            repo (str): the repository name.
+
         Returns:
-            Dict of repo dependency info from libraries.io.
+            (Any): Dict of repo dependency info from libraries.io.
         """
 
         return SearchAPI.call("repository_dependencies", self.session, host, owner, repo)
@@ -168,11 +178,12 @@ class Search:
         Get a list of projects referencing the given repository.
 
         Args:
-            host: host provider name (e.g. GitHub)
-            owner: owner
-            repo: repo
+            host (str): host provider name (e.g. GitHub)
+            owner (str): the repository owner.
+            repo (str): the repository name.
+
         Returns:
-            List of dicts of projects referencing a repo from libraries.io.
+            (Any): List of dicts of projects referencing a repo from libraries.io.
         """
 
         return SearchAPI.call("repository_projects", self.session, host, owner, repo)
@@ -182,10 +193,11 @@ class Search:
         Return information about a user.
 
         Args:
-            host: host provider name (e.g. GitHub)
-            user: username
+            host (str): host provider name (e.g. GitHub).
+            user (str): username.
+
         Returns:
-        Dict of info about user from libraries.io.
+            (Any): Dict of info about user from libraries.io.
         """
         return SearchAPI.call("user", self.session, host, user)
 
@@ -194,10 +206,11 @@ class Search:
         Return information about a user's repos.
 
         Args:
-            host: host provider name (e.g. GitHub)
-            user: username
+            host (str): host provider name (e.g. GitHub).
+            user (str): username.
+
         Returns:
-            List of dicts with info about user repos from libraries.io.
+           (Any): List of dicts with info about user repos from libraries.io.
         """
         return SearchAPI.call("user_repositories", self.session, host, user)
 
@@ -206,10 +219,11 @@ class Search:
         Return information about projects using a user's repos.
 
         Args:
-            host: host provider name (e.g. GitHub)
-            user: username
+            host (str): host provider name (e.g. GitHub).
+            user (str): username.
+
         Returns:
-            List of dicts of project info from libraries.io.
+            (Any): List of dicts of project info from libraries.io.
         """
         return SearchAPI.call("user_projects", self.session, host, user)
 
@@ -218,10 +232,11 @@ class Search:
         Return information about projects a user has contributed to.
 
         Args:
-            host: host provider name (e.g. GitHub)
-            user: username
+            host (str): host provider name (e.g. GitHub).
+            user (str): username.
+
         Returns:
-            List of dicts with user project contribution info from libraries.io.
+            (Any): List of dicts with user project contribution info from libraries.io.
         """
         return SearchAPI.call("user_projects_contributions", self.session, host, user)
 
@@ -230,10 +245,11 @@ class Search:
         Return information about repositories a user has contributed to.
 
         Args:
-            host: host provider name (e.g. GitHub)
-            user: username
+            host (str): host provider name (e.g. GitHub).
+            user (str): username.
+
         Returns:
-            (list): list of dicts response from libraries.io
+            (Any): list of dicts response from libraries.io
         """
         return SearchAPI.call("user_repositories_contributions", self.session, host, user)
 
@@ -244,9 +260,10 @@ class Search:
         Ordered by frequency of use in those repositories.
 
         Args:
-            host: host provider name (e.g. GitHub)
-            user: username
+            host (str): host provider name (e.g. GitHub).
+            user (str): username.
+
         Returns:
-            List of dicts with user project dependency info.
+            (Any): List of dicts with user project dependency info.
         """
         return SearchAPI.call("user_dependencies", self.session, host, user)

@@ -15,6 +15,8 @@ DEFAULT_PER_PAGE = 30
 # the default http retry force list set of codes
 DEFAULT_STATUS_FORCELIST = {500, 502, 503, 504}
 
+# fs_log = logging.getLogger(QUIBRARIES_LOGGER)
+
 
 class LibIOSessionBase:
     """
@@ -163,20 +165,22 @@ class LibIOSessionBase:
         """
         # try to set the page we want to fetch, the default is the first page (e.g. page = 1)
         try:
-            page = sess.params["page"] if page is None else page
+            page = sess.params["page"] if page is None else page  # type: ignore
         except KeyError:
             page = DEFAULT_PAGE
 
         # try to set the items per page we want to get, the default is 30 items per page.
         try:
-            per_page = sess.params["per_page"] if per_page is None else per_page
+            per_page = sess.params["per_page"] if per_page is None else per_page  # type: ignore
         except KeyError:
             per_page = DEFAULT_PER_PAGE
 
-        sess.params["page"] = max(page, 1)  # Min value is 1
-        sess.params["per_page"] = min(max(per_page, 1), 100)  # Values between 1 and 100
+        # Min value is 1
+        sess.params["page"] = max(page, 1)  # type: ignore
+        # Values between 1 and 100
+        sess.params["per_page"] = min(max(per_page, 1), 100)  # type: ignore
 
-        valid_values_range = sess.params["page"] == page and sess.params["per_page"] == per_page
+        valid_values_range = sess.params["page"] == page and sess.params["per_page"] == per_page  # type: ignore
         return valid_values_range
 
     def request_factory(self, action: str, req_type: str, *args, **kwargs):

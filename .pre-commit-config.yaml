@@ -42,7 +42,9 @@ repos:
     rev: 2.1.6  # or specific git tag
     hooks:
       - id: fasterer
-      - id: git-check  # Configure in .gitattributes
+#      - id: git-check  # Configure in .gitattributes
+#        exclude: |
+#          (?x)(^docs/)
       - id: markdownlint # Configure in .mdlrc
       - id: shfmt
         args: [ -i 2 ]

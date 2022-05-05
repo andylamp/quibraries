@@ -1,16 +1,15 @@
-"""Describes the base API wrapper"""
+"""Describes the base API wrapper."""
 
-from typing import Optional
 
 from .remote_sess import LibIOSessionBase
 
 
 # pylint: disable=too-few-public-methods
 class LibrariesIOAPIBase:
-    """The base class used in order to define the distinct APIs"""
+    """The base class used in order to define the distinct APIs."""
 
     @staticmethod
-    def call(action, sess: Optional[LibIOSessionBase], *args, **kwargs):
+    def call(action, sess: LibIOSessionBase, *args, **kwargs):
         """
         Override to call the API.
 

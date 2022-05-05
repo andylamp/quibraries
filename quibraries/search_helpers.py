@@ -2,6 +2,7 @@
 from typing import List
 
 from .base import LibrariesIOAPIBase
+from .errors import InvalidSessionClassSupplied
 from .helpers import extract
 from .remote_sess import LibIOIterableRequest, LibIOSession, LibIOSessionBase
 
@@ -13,27 +14,28 @@ class SearchAPI(LibrariesIOAPIBase):
     """
 
     @staticmethod
-    def call(action, sess: LibIOSession, *args, **kwargs):
+    def call(action, sess: LibIOSessionBase, *args, **kwargs):
         """
         build and call for search
 
         Args:
             action (str): function action name
-            sess (LibIOSession): the session to use.
+            sess (LibIOSessionBase): the session to use.
             *args (str): positional arguments
             **kwargs (str): keyword arguments
         Returns:
-            (list): list of dicts response from libraries.io.
-                according to page and per page
-            Many are dicts or list of dicts.
+            (list): list of dicts response from libraries.io. according to page and per page. Many are dicts or
+                    list of dicts.
         """
-        # handle_query_params(action, **kwargs)
 
+        if not isinstance(sess, LibIOSession):
+            raise InvalidSessionClassSupplied
+        req_type = "get"
         # perform a regular query
-        if not kwargs["iterated"]:
+        if "iterated" not in kwargs or not kwargs["iterated"]:
             return sess.make_request(
                 action,
-                req_type="get",
+                req_type,
                 uri_handler=SearchAPI._uri_handler,
                 param_handler=SearchAPI._param_handler,
                 *args,
@@ -44,7 +46,7 @@ class SearchAPI(LibrariesIOAPIBase):
         return iter(
             LibIOIterableRequest(
                 action,
-                req_type="get",
+                req_type,
                 api_key=sess.get_key(),
                 uri_handler=SearchAPI._uri_handler,
                 param_handler=SearchAPI._param_handler,
