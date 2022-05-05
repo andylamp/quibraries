@@ -1,10 +1,14 @@
 """The Search API caller."""
+import logging
 from typing import List
 
 from .base import LibrariesIOAPIBase
+from .consts import QB_LOGGER
 from .errors import InvalidSessionClassSupplied
 from .helpers import extract
 from .remote_sess import LibIOIterableRequest, LibIOSession, LibIOSessionBase
+
+qb_logger = logging.getLogger(QB_LOGGER)
 
 
 # pylint: disable=too-few-public-methods
@@ -16,13 +20,14 @@ class SearchAPI(LibrariesIOAPIBase):
     @staticmethod
     def call(action, sess: LibIOSessionBase, *args, **kwargs):
         """
-        build and call for search
+        build and call for search.
 
         Args:
-            action (str): function action name
+            action (str): action name.
             sess (LibIOSessionBase): the session to use.
-            *args (str): positional arguments
-            **kwargs (str): keyword arguments
+            *args (): positional arguments.
+            **kwargs (): keyword arguments.
+
         Returns:
             (list): list of dicts response from libraries.io. according to page and per page. Many are dicts or
                     list of dicts.
@@ -56,54 +61,57 @@ class SearchAPI(LibrariesIOAPIBase):
         )
 
     @staticmethod
-    def _param_handler(action: str, sess: LibIOSessionBase, **kwargs):
+    def _param_handler(action: str, sess_params: dict, **kwargs):
         """
+        Handler which is responsible for parsing and configuring the session variables specific to this query.
 
         Args:
-            action (str):
-            sess ():
-            **kwargs ():
-
-        Returns:
-
+            action (str): the action to perform, as a string.
+            sess_params (dict): the session parameters.
+            **kwargs (): the variadic keyword arguments.
         """
-        # if action == "special_project_search":
-        #     try:
-        #         sess.params["q"] = kwargs["keywords"]
-        #     except Exception as exc:
-        #         print(f"A string of keywords must be passed as a keyword argument, details: {exc}")
-        #
-        #     if "platforms" in kwargs:
-        #         sess.params["platforms"] = kwargs["platforms"]
-        #     if "licenses" in kwargs:
-        #         sess.params["licenses"] = kwargs["licenses"]
-        #     if "languages" in kwargs:
-        #         sess.params["languages"] = kwargs["languages"]
-        #
-        # elif "project" in kwargs:
-        #     sess.params["q"] = kwargs["project"]
-        #
-        # if "filters" in kwargs:
-        #     extract(*list(kwargs["filters"].keys())).of(kwargs["filters"]).then(sess.params.__setitem__)
-        #
-        # if "sort" in kwargs:
-        #     sess.params["sort"] = kwargs["sort"]
-        # if "page" in kwargs:
-        #     sess.params["page"] = kwargs["page"]
-        # if "per_page" in kwargs:
-        #     sess.params["per_page"] = kwargs["per_page"]
+        if action == "special_project_search":
+            try:
+                sess_params["q"] = kwargs["keywords"]
+            except KeyError as key_exc:
+                qb_logger.error("A string of keywords must be passed as a keyword argument, details: %s", key_exc)
 
+            if "platforms" in kwargs:
+                sess_params["platforms"] = kwargs["platforms"]
+            if "licenses" in kwargs:
+                sess_params["licenses"] = kwargs["licenses"]
+            if "languages" in kwargs:
+                sess_params["languages"] = kwargs["languages"]
+
+        elif "project" in kwargs:
+            sess_params["q"] = kwargs["project"]
+
+        if "filters" in kwargs:
+            filters = kwargs["filters"]
+
+            # check that filters is of the correct type
+            if not isinstance(filters, dict):
+                raise AttributeError("Filters should be a dictionary.")
+
+            extract(*list(filters.keys())).of(filters).then(sess_params.__setitem__)
+
+        # check if sort is in the params
+        if "sort" in kwargs:
+            sess_params["sort"] = kwargs["sort"]
+
+    # pylint: disable=too-many-branches
     @staticmethod
-    def _uri_handler(action, *args, **kwargs) -> str:
+    def _uri_handler(action: str, *args, **kwargs) -> str:
         """
+        The URI handler, which transforms arguments into the desired URI to be used when calling the API.
 
         Args:
-            action ():
+            action (str): the action to perform, as a string.
             *args ():
             **kwargs ():
 
         Returns:
-
+            (str): the final URI based on the received arguments.
         """
 
         def from_kwargs(*keys):

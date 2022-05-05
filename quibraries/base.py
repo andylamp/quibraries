@@ -16,8 +16,9 @@ class LibrariesIOAPIBase:
         Args:
             action (str): function action name
             sess (Optional[LibIOSessionBase]): the session to use, for non-iterable queries.
-            *args (str): positional arguments
-            **kwargs (str): keyword arguments
+            *args (str): positional arguments.
+            **kwargs (str): keyword arguments.
+
         Returns:
             (list): list of dicts response from libraries.io.
                 according to page and per page
@@ -26,15 +27,15 @@ class LibrariesIOAPIBase:
         raise NotImplementedError
 
     @staticmethod
-    def _param_handler(action, sess, **kwargs):
+    def _param_handler(action, sess_params, **kwargs):
         """
 
         Override to create the request parameter handler.
 
         Args:
-            action (str): function action name
-            sess (LibIOSession): the session to use.
-            **kwargs (str): keyword arguments
+            action (str): the action name.
+            sess_params (dict): the session parameter dictionary to use.
+            **kwargs (): keyword arguments.
         """
         raise NotImplementedError
 
@@ -44,10 +45,9 @@ class LibrariesIOAPIBase:
         Override to create the uri handler.
 
         Args:
-            action (str): function action name
-            sess (LibIOSession): the session to use.
-            *args (str): positional arguments
-            **kwargs (str): keyword arguments
+            action (str): the action name.
+            *args (str): positional arguments.
+            **kwargs (): keyword arguments.
 
         Returns:
             (str): the final uri to use.

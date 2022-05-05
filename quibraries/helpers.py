@@ -18,8 +18,8 @@ def extract(*keys):
                     return [f(key, value) for key, value in zip(keys, values)]
 
             values = Promise()
-            values.extend([container.pop(k) for k in keys if k in container])
-            values.then = then
+            values.extend([container.pop(k) for k in keys if k in container])  # type: ignore
+            values.then = then  # type: ignore
             return values
 
     return From()

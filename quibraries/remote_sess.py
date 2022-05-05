@@ -208,6 +208,10 @@ class LibIOSessionBase:
         sess = self.get_session(
             include_prerelease=bool(req_type == "post"), page=kwargs["page"], items_per_page=kwargs["items_per_page"]
         )
+
+        if kwargs["param_handler"] is not None:
+            kwargs["param_handler"](action, sess.params, **kwargs)
+
         resp = getattr(
             sess,
             req_type,
