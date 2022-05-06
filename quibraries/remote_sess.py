@@ -158,9 +158,10 @@ class LibIOSessionBase:
         """
         Change pagination settings.
 
-        :arg
-            per_page (Optional[int]): (optional) use this value instead of current session params
-            page (Optional[int]): (optional) use this value instead of current session params
+        Args:
+            sess (requests.Session): the request session instance to use.
+            per_page (Optional[int]): (optional) use this value instead of current session params.
+            page (Optional[int]): (optional) use this value instead of current session params.
 
         Returns:
             valid_values_range (bool): page and per_page values within valid range
