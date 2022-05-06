@@ -1,4 +1,5 @@
 """Describes the libraries.io session."""
+import logging
 import os
 from typing import Optional
 
@@ -7,6 +8,7 @@ from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError
 from urllib3.util.retry import Retry
 
+from .consts import QB_LOGGER
 from .errors import APIKeyMissingError, PaginationReceivedAnEmptyPageError, SessionNotInitialisedError
 
 # values used for pagination
@@ -15,7 +17,7 @@ DEFAULT_PER_PAGE = 30
 # the default http retry force list set of codes
 DEFAULT_STATUS_FORCELIST = {500, 502, 503, 504}
 
-# fs_log = logging.getLogger(QUIBRARIES_LOGGER)
+qb_log = logging.getLogger(QB_LOGGER)
 
 
 class LibIOSessionBase:
@@ -255,9 +257,9 @@ class LibIOSession(LibIOSessionBase):
         try:
             ret = self.request_factory(action, req_type, *args, **kwargs)
         except HTTPError as http_err:
-            print(f"HTTP error occurred: {http_err}")
+            qb_log.error("HTTP error occurred: %s", http_err)
         except Exception as err:
-            print(f"Other error occurred: {err}")
+            qb_log.error("Other error occurred: %s", err)
         finally:
             self.clear_session_params()
 
@@ -331,13 +333,14 @@ class LibIOIterableRequest:
             # likely pagination finished as we encountered an empty page, stop it.
             raise StopIteration from PaginationReceivedAnEmptyPageError
         except HTTPError as http_err:
-            print(
-                f"An HTTP error was encountered during pagination of url: uri at page: {self.current_page}), "
-                f"details: {http_err}"
+            qb_log.error(
+                "An HTTP error was encountered during pagination of url: uri at page: %s), details: %s",
+                self.current_page,
+                http_err,
             )
             raise StopIteration from HTTPError
         except Exception as exc:
-            print(f"Something went wrong and an exception was raised, details {exc}.")
+            qb_log.error("Something went wrong and an exception was raised, details %s.", exc)
             raise StopIteration from Exception
 
         # finally, return the results

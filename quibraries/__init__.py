@@ -30,10 +30,10 @@ __all__ = [
 # we use `NullHandler`.
 handler: Union[logging.StreamHandler, logging.NullHandler]
 if QB_LOG_ENABLED in os.environ:
-    print("setting up quibraries logger")
+    # print("setting up quibraries logger")
     handler = logging.StreamHandler(sys.stdout)
 else:
-    print("setting up quibraries null logger")
+    # print("setting up quibraries null logger")
     handler = logging.NullHandler()
 
 # configure the target handler
