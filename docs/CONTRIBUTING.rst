@@ -4,7 +4,7 @@ Contributing
 
 Contributions are welcome and greatly appreciated. Please ensure while contributing or interacting with
 the developers that you follow our
-`Code of Conduct <https://github.com/andylamp/quibraries/blob/master/code_of_conduct.md>`_.
+`Code of Conduct <https://github.com/andylamp/quibraries/blob/master/docs/CODE_OF_CONDUCT.rst>`_.
 
 Types of Contributions
 ----------------------
