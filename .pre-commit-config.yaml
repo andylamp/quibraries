@@ -76,7 +76,7 @@ repos:
       - id: flake8
   # add sql-fluff
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: '0.13.0'
+    rev: '0.13.1'
     hooks:
       # add the linter
       - id: sqlfluff-lint
