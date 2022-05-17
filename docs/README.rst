@@ -55,7 +55,7 @@ one item, then the result is a list of dictionaries.
 Docs
 ____
 
-* Check out the full pybraries `documentation`_.
+* Check out the full quibraries `documentation`_.
 
 Getting Help
 ____________
