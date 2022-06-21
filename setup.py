@@ -18,7 +18,7 @@ with open(os.path.join(CURRENT_PATH, "requirements_prod.txt"), "r", encoding="ut
 if __name__ == "__main__":
     setup(
         name="quibraries",
-        version="0.0.2",
+        version="0.0.3",
         author="Andreas A. Grammenos",
         author_email="axorl@quine.sh",
         description="A thread-safe Python wrapper for the libraries.io API",

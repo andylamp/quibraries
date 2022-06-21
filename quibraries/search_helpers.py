@@ -1,6 +1,7 @@
 """The Search API caller."""
 import logging
 from typing import List
+from urllib.parse import quote
 
 from .base import LibrariesIOAPIBase
 from .consts import QB_LOGGER
@@ -117,6 +118,8 @@ class SearchAPI(LibrariesIOAPIBase):
         def from_kwargs(*keys):
             return extract(*keys).of(kwargs).then([].append)
 
+        encoded_args = [quote(a, safe="") for a in args]
+
         url_end_list: List[str] = ["https://libraries.io/api"]  # start of list to build url
         if action == "special_project_search":
             url_end_list.append("search?")
@@ -124,7 +127,7 @@ class SearchAPI(LibrariesIOAPIBase):
             url_end_list.append("platforms")
         elif action.startswith("project"):
             action = action[7:]  # remove action prefix
-            url_end_list += [*from_kwargs("platforms", "project"), *args]
+            url_end_list += [*from_kwargs("platforms", "project"), *encoded_args]
             if action.startswith("_"):
                 action = action[1:]  # remove remaining underscore from operation name
                 if action == "dependencies":
@@ -133,11 +136,11 @@ class SearchAPI(LibrariesIOAPIBase):
                 url_end_list.append(action)
         elif action.startswith("repository"):
             action = action[len("repository") :]
-            url_end_list += [*from_kwargs("host", "owner", "repo"), *args]
+            url_end_list += [*from_kwargs("host", "owner", "repo"), *encoded_args]
             if action.startswith("_"):
                 url_end_list.append(action[1:])
         elif "user" in action:
-            url_end_list += [*from_kwargs("host", "user"), *args]
+            url_end_list += [*from_kwargs("host", "user"), *encoded_args]
             if action == "user_repositories":
                 url_end_list.append("repositories")
 
