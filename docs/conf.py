@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "quibraries"
-copyright = "2022, Quine Technologies"
+copyright = "2022-, Quine Technologies"
 author = "Andreas A. Grammenos"
 
 

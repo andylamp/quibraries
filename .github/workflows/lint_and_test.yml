@@ -12,12 +12,12 @@ jobs:
     strategy:
       matrix:
         # check against the package supported versions
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setting up Python version ${{ matrix.python-version }}...
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           architecture: "x64"
@@ -31,7 +31,7 @@ jobs:
           sudo snap install shfmt
       # Python linting phase
       - name: Running pre-commit hooks...
-        uses: pre-commit/action@v2.0.0
+        uses: pre-commit/action@v3
       # Shell linting phase
       - name: Running shell check...
         uses: ludeeus/action-shellcheck@master

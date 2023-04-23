@@ -5,7 +5,7 @@ default_stages:
 repos:
   # the default pre-commit hooks, we use most of them
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: 'v4.2.0'
+    rev: 'v4.4.0'
     hooks:
       # check whether the files parsed a valid python
       - id: check-ast
@@ -39,7 +39,7 @@ repos:
       # check json format and make it pretty
       - id: pretty-format-json
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
-    rev: 2.1.6  # or specific git tag
+    rev: 3.0.0  # or specific git tag
     hooks:
       - id: fasterer
 #      - id: git-check  # Configure in .gitattributes
@@ -50,7 +50,7 @@ repos:
         args: [ -i 2 ]
   # ensure code is black compliant
   - repo: https://github.com/psf/black
-    rev: '22.3.0'
+    rev: '23.3.0'
     hooks:
       - id: black
   # statically populates the `known_third_party` config of `isort`
@@ -60,23 +60,23 @@ repos:
       - id: seed-isort-config
   # fetch the isort package
   - repo: https://github.com/PyCQA/isort
-    rev: '5.10.1'
+    rev: '5.12.0'
     hooks:
       - id: isort
   # add autoflakes
   - repo: https://github.com/myint/autoflake
-    rev: v1.4
+    rev: v2.1.1
     hooks:
       - id: autoflake
         args: [ '--in-place', '--remove-all-unused-imports', '--ignore-init-module-imports']
   # run flake8 and make sure it passes
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: '3.9.2'
+  - repo: https://github.com/pycqa/flake8
+    rev: '6.0.0'
     hooks:
       - id: flake8
   # add sql-fluff
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: '0.13.1'
+    rev: '2.0.7'
     hooks:
       # add the linter
       - id: sqlfluff-lint
@@ -96,7 +96,7 @@ repos:
         args: [--exclude ./venv]
   # add mypy
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v0.950'
+    rev: 'v1.2.0'
     hooks:
       - id: mypy
         args: ["--show-error-codes", "--ignore-missing-imports"]

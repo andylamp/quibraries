@@ -8,7 +8,7 @@ def extract(*keys):
     class From:
         def of(self, container: Union[Dict, List, Tuple]):
             class Promise(list):  # workaround to allow monkeypatch to builtin list type
-                def then(self, f) -> List:
+                def then(self, f) -> List:  # type: ignore
                     pass
 
             def then(f):

@@ -1,5 +1,5 @@
 """Module that contains the wrapper around the Search API for libraries.io"""
-from typing import Any
+from typing import Any, Optional
 
 from .remote_sess import LibIOSession
 from .search_helpers import SearchAPI
@@ -35,7 +35,7 @@ class Search:
         """
         return SearchAPI.call("project", self.session, platforms, name)
 
-    def project_dependencies(self, platforms: str, project: str, version: str = None) -> Any:
+    def project_dependencies(self, platforms: str, project: str, version: Optional[str] = None) -> Any:
         """
         Get dependencies for a version of a project.
 
@@ -44,7 +44,7 @@ class Search:
         Args:
             platforms (str): package manager (e.g. "pypi").
             project (str): project name.
-            version (str): (optional) project version.
+            version (Optional[str]): (optional) project version.
 
         Returns:
             (Any): Dict of dependencies for a version of a project from libraries.io.
@@ -52,14 +52,14 @@ class Search:
 
         return SearchAPI.call("project_dependencies", self.session, platforms, project, version=version)
 
-    def project_dependents(self, platforms: str, project: str, version: str = None) -> Any:
+    def project_dependents(self, platforms: str, project: str, version: Optional[str] = None) -> Any:
         """
         Get projects that have at least one version that depends on a given project.
 
         Args:
             platforms (str): package manager (e.g. "pypi").
             project (str): project name.
-            version (str): project version.
+            version (Optional[str]): project version.
 
         Returns:
             (Any): List of dicts project dependents from libraries.io.
