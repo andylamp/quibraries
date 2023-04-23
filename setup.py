@@ -18,7 +18,7 @@ with open(os.path.join(CURRENT_PATH, "requirements_prod.txt"), "r", encoding="ut
 if __name__ == "__main__":
     setup(
         name="quibraries",
-        version="0.0.4",
+        version="0.0.5",
         author="Andreas A. Grammenos",
         author_email="axorl@quine.sh",
         description="A thread-safe Python wrapper for the libraries.io API",
@@ -28,14 +28,13 @@ if __name__ == "__main__":
         install_requires=requirements,
         classifiers=[
             "Development Status :: 4 - Beta",
-            "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
             "Programming Language :: Python :: 3.11",
             "License :: OSI Approved :: MIT License",
         ],
         license="MIT",
         license_files=("LICENSE",),
-        python_requires=">=3.9",
+        python_requires=">=3.10",
         include_package_data=True,
         zip_safe=False,
     )

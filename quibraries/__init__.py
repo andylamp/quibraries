@@ -2,7 +2,7 @@
 import logging
 import os
 import sys
-from typing import TypeAlias, Union
+from typing import TypeAlias
 
 from .consts import QB_LOG_ENABLED, QB_LOG_FORMAT, QB_LOG_LEVEL, QB_LOGGER
 from .errors import (
@@ -16,7 +16,7 @@ from .search import Search
 from .search_helpers import SearchAPI
 
 # put the type alias for the logging type
-HandlerType: TypeAlias = Union[logging.StreamHandler, logging.NullHandler]
+HandlerType: TypeAlias = logging.StreamHandler | logging.NullHandler
 
 __all__ = [
     "LibIOSession",
@@ -31,9 +31,7 @@ __all__ = [
 
 # enable logging, if we have the env flag up we report in stdout, otherwise
 # we use `NullHandler`.
-# pylint: disable=invalid-name
 handler: HandlerType
-# pylint: enable=invalid-name
 if QB_LOG_ENABLED in os.environ:
     # print("setting up quibraries logger")
     handler = logging.StreamHandler(sys.stdout)
