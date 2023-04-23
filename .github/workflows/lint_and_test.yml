@@ -31,7 +31,7 @@ jobs:
           sudo snap install shfmt
       # Python linting phase
       - name: Running pre-commit hooks...
-        uses: pre-commit/action@v3
+        uses: pre-commit/action@v3.0.0
       # Shell linting phase
       - name: Running shell check...
         uses: ludeeus/action-shellcheck@master
