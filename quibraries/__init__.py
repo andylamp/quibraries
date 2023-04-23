@@ -2,12 +2,7 @@
 import logging
 import os
 import sys
-
-try:
-    from typing import TypeAlias, Union
-except ImportError:
-    from typing import Union
-    from typing_extensions import TypeAlias
+from typing import TypeAlias, Union
 
 from .consts import QB_LOG_ENABLED, QB_LOG_FORMAT, QB_LOG_LEVEL, QB_LOGGER
 from .errors import (

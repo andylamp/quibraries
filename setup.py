@@ -28,14 +28,14 @@ if __name__ == "__main__":
         install_requires=requirements,
         classifiers=[
             "Development Status :: 4 - Beta",
-            "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: 3.11",
             "License :: OSI Approved :: MIT License",
         ],
         license="MIT",
         license_files=("LICENSE",),
-        python_requires=">=3.8",
+        python_requires=">=3.9",
         include_package_data=True,
         zip_safe=False,
     )
