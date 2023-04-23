@@ -4,7 +4,7 @@ from typing import List
 from urllib.parse import quote
 
 from .base import LibrariesIOAPIBase
-from .consts import QB_LOGGER
+from .consts import LB_BASE_API_URI, QB_LOGGER
 from .errors import InvalidSessionClassSupplied
 from .helpers import extract
 from .remote_sess import LibIOIterableRequest, LibIOSession, LibIOSessionBase
@@ -15,7 +15,8 @@ qb_logger = logging.getLogger(QB_LOGGER)
 # pylint: disable=too-few-public-methods
 class SearchAPI(LibrariesIOAPIBase):
     """
-    Make this nice
+    The Search API wrapper, which is responsible for calling the libraries.io `search` API with appropriately
+    formatted requests.
     """
 
     @staticmethod
@@ -120,7 +121,7 @@ class SearchAPI(LibrariesIOAPIBase):
 
         encoded_args = [quote(a, safe="") for a in args]
 
-        url_end_list: List[str] = ["https://libraries.io/api"]  # start of list to build url
+        url_end_list: List[str] = [LB_BASE_API_URI]  # start of list to build url
         if action == "special_project_search":
             url_end_list.append("search?")
         elif action == "platforms":
