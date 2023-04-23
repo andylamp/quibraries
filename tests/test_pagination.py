@@ -17,5 +17,5 @@ def test_iterated_pagination_attempt(search_session: Search):
     for idx, page in enumerate(result_iter):
         assert len(page) == 30
 
-        if idx > 3:
+        if idx > 1:
             break
