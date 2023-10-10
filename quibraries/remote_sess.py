@@ -1,23 +1,19 @@
 """Describes the libraries.io session."""
 import logging
 import os
-from typing import Optional
 
 import requests
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError
+
+# noinspection PyPackageRequirements
 from urllib3.util.retry import Retry
 
-from .consts import QB_LOGGER
+from .consts import QB_DEFAULT_PAGE, QB_DEFAULT_PER_PAGE, QB_DEFAULT_STATUS_FORCELIST, QB_LOGGER
 from .errors import APIKeyMissingError, PaginationReceivedAnEmptyPageError, SessionNotInitialisedError
 
-# values used for pagination
-DEFAULT_PAGE = 1
-DEFAULT_PER_PAGE = 30
-# the default http retry force list set of codes
-DEFAULT_STATUS_FORCELIST = {500, 502, 503, 504}
-
 qb_log = logging.getLogger(QB_LOGGER)
+"""Fetch the logger with the appropriate tag."""
 
 
 class LibIOSessionBase:
@@ -53,8 +49,8 @@ class LibIOSessionBase:
     # pylint: disable=too-many-arguments
     def get_session(
         self,
-        page: Optional[int] = None,
-        items_per_page: Optional[int] = None,
+        page: int | None = None,
+        items_per_page: int | None = None,
         force_recreate: bool = False,
         include_prerelease: bool = False,
     ) -> requests.Session:
@@ -63,8 +59,8 @@ class LibIOSessionBase:
         retry config.
 
         Args:
-            page (Optional[int]): the page to return the query for, default is the first one.
-            items_per_page (Optional[int]): the items to return per page.
+            page (int | None): the page to return the query for, default is the first one.
+            items_per_page (int | None): the items to return per page.
             force_recreate (bool): recreates the session instance.
             include_prerelease (bool): flag that indicates if we enable prerelease or not.
 
@@ -114,14 +110,14 @@ class LibIOSessionBase:
         """
         self._api_key = key
 
-    def set_retry_config(self, total: int = 3, backoff_factor: float = 0.2, status_forcelist: Optional[list] = None):
+    def set_retry_config(self, total: int = 3, backoff_factor: float = 0.2, status_forcelist: list | None = None):
         """
         The retry behaviour to be used for the session.
 
         Args:
             total (int): the amount of allowed retries.
             backoff_factor (float): the back-off factor.
-            status_forcelist (Optional[list]): the http codes that we force retries.
+            status_forcelist (list | None): the http codes that we force retries.
         """
         # check if we have a valid session
         self._has_valid_session()
@@ -130,7 +126,7 @@ class LibIOSessionBase:
         self._retry_config = Retry(
             total=total,
             backoff_factor=backoff_factor,
-            status_forcelist=DEFAULT_STATUS_FORCELIST if not status_forcelist else status_forcelist,
+            status_forcelist=QB_DEFAULT_STATUS_FORCELIST if not status_forcelist else status_forcelist,
         )
 
         # now add them to the session
@@ -154,14 +150,14 @@ class LibIOSessionBase:
 
     # noinspection PyTypeChecker,PyUnresolvedReferences
     @staticmethod
-    def fix_pages(sess: requests.Session, page: Optional[int] = None, per_page: Optional[int] = None) -> bool:
+    def fix_pages(sess: requests.Session, page: int | None = None, per_page: int | None = None) -> bool:
         """
         Change pagination settings.
 
         Args:
             sess (requests.Session): the request session instance to use.
-            per_page (Optional[int]): (optional) use this value instead of current session params.
-            page (Optional[int]): (optional) use this value instead of current session params.
+            per_page (int | None): (optional) use this value instead of current session params.
+            page (int | None): (optional) use this value instead of current session params.
 
         Returns:
             valid_values_range (bool): page and per_page values within valid range
@@ -170,13 +166,13 @@ class LibIOSessionBase:
         try:
             page = sess.params["page"] if page is None else page  # type: ignore
         except KeyError:
-            page = DEFAULT_PAGE
+            page = QB_DEFAULT_PAGE
 
         # try to set the items per page we want to get, the default is 30 items per page.
         try:
             per_page = sess.params["per_page"] if per_page is None else per_page  # type: ignore
         except KeyError:
-            per_page = DEFAULT_PER_PAGE
+            per_page = QB_DEFAULT_PER_PAGE
 
         # Min value is 1
         sess.params["page"] = max(page, 1)  # type: ignore
@@ -200,8 +196,8 @@ class LibIOSessionBase:
 
         kwargs.setdefault("uri_handler", None)
         kwargs.setdefault("param_handler", None)
-        kwargs.setdefault("page", DEFAULT_PAGE)
-        kwargs.setdefault("items_per_page", DEFAULT_PER_PAGE)
+        kwargs.setdefault("page", QB_DEFAULT_PAGE)
+        kwargs.setdefault("items_per_page", QB_DEFAULT_PER_PAGE)
 
         if req_type not in ("get", "post", "put", "delete"):
             raise ValueError("Request type can only be `get`, `put`, `delete`, or `post`.")
@@ -297,7 +293,7 @@ class LibIOIterableRequest:
 
         kwargs.setdefault("api_key", "")
         kwargs.setdefault("sess", None)
-        kwargs.setdefault("from_page", DEFAULT_PAGE)
+        kwargs.setdefault("from_page", QB_DEFAULT_PAGE)
 
         if kwargs["sess"] is None and not kwargs["api_key"]:
             raise ValueError("Cannot create request without a valid session or API key.")

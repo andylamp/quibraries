@@ -33,14 +33,14 @@ __all__ = [
 # we use `NullHandler`.
 handler: HandlerType
 if QB_LOG_ENABLED in os.environ:
-    # print("setting up quibraries logger")
+    # print("setting up our logger")
     handler = logging.StreamHandler(sys.stdout)
+    # configure the target handler
+    handler.setLevel(QB_LOG_LEVEL)
+    handler.setFormatter(QB_LOG_FORMAT)
 else:
-    # print("setting up quibraries null logger")
+    # print("setting up the null logger")
     handler = logging.NullHandler()
 
-# configure the target handler
-handler.setLevel(QB_LOG_LEVEL)
-handler.setFormatter(QB_LOG_FORMAT)
 # get a logger by the specified name and attach its handler
 logging.getLogger(QB_LOGGER).addHandler(handler)

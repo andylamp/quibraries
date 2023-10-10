@@ -5,7 +5,7 @@ default_stages:
 repos:
   # the default pre-commit hooks, we use most of them
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: 'v4.4.0'
+    rev: 'v4.5.0'
     hooks:
       # check whether the files parsed a valid python
       - id: check-ast
@@ -50,7 +50,7 @@ repos:
         args: [ -i 2 ]
   # ensure code is black compliant
   - repo: https://github.com/psf/black
-    rev: '23.3.0'
+    rev: '23.9.1'
     hooks:
       - id: black
   # statically populates the `known_third_party` config of `isort`
@@ -65,18 +65,18 @@ repos:
       - id: isort
   # add autoflakes
   - repo: https://github.com/myint/autoflake
-    rev: v2.1.1
+    rev: v2.2.1
     hooks:
       - id: autoflake
         args: [ '--in-place', '--remove-all-unused-imports', '--ignore-init-module-imports']
   # run flake8 and make sure it passes
   - repo: https://github.com/pycqa/flake8
-    rev: '6.0.0'
+    rev: '6.1.0'
     hooks:
       - id: flake8
   # add sql-fluff
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: '2.0.7'
+    rev: '2.3.2'
     hooks:
       # add the linter
       - id: sqlfluff-lint
@@ -96,7 +96,7 @@ repos:
         args: [--exclude ./venv]
   # add mypy
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.2.0'
+    rev: 'v1.5.1'
     hooks:
       - id: mypy
         args: ["--show-error-codes", "--ignore-missing-imports"]

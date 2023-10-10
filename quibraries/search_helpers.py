@@ -20,7 +20,7 @@ class SearchAPI(LibrariesIOAPIBase):
     """
 
     @staticmethod
-    def call(action, sess: LibIOSessionBase, *args, **kwargs):
+    def call(action: str, sess: LibIOSessionBase, *args, **kwargs):
         """
         build and call for search.
 

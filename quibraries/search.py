@@ -9,7 +9,12 @@ class Search:
     """Class for wrapping the libraries.io API for platform, project, repo, and user GET actions."""
 
     def __init__(self, api_key: str = ""):
-        # create the regular one
+        """
+        Constructor responsible for initialising the Libraries.io session.
+
+        Args:
+            api_key (str): the API key to use, if blank - it is expected to be present in the environment.
+        """
         self.session = LibIOSession(api_key)
 
     def platforms(self) -> Any:

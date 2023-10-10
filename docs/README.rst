@@ -2,6 +2,7 @@
 Quibraries
 =============
 
+|lint| |coverage|
 
 Quibraries is a `Python`_ wrapper for the `libraries.io`_ API which is based on `Pybraries`_.
 Currently the package fully supports the searching functionality, meaning that the full range of available commands
@@ -74,6 +75,8 @@ _______
 
 This software package is governed by the terms and conditions of the `MIT license`_
 
+.. |lint| image:: https://github.com/andylamp/quibraries/actions/workflows/lint.yml/badge.svg
+.. |coverage| image:: ../coverage.svg
 .. _MIT License: https://github.com/andylamp/quibraries/blob/master/LICENSE
 .. _Contributing: https://quibraries.readthedocs.io/en/latest/CONTRIBUTING.html
 .. _Read the Docs: https://quibraries.readthedocs.io/en/latest/README.html

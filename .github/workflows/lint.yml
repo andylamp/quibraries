@@ -1,0 +1,87 @@
+# Workflow that lints, tests, and creates coverage badge based on our test suite.
+name: lint
+
+# lint on both push and PRs but not in the release branch
+on:
+  push:
+    branches-ignore:
+      - release
+  pull_request:
+    branches-ignore:
+      - release
+
+# The defined jobs
+jobs:
+  # the job build configuration and steps
+  build:
+    # We use ubuntu latest for this, which normally is the most recent LTS version
+    runs-on: ubuntu-latest
+    # add permission so that the commit can be made
+    permissions: write-all
+
+    env:
+      # Coverage related variables
+      min-python: "3.11"
+      coverage-badge-filename: coverage.svg
+
+    strategy:
+      matrix:
+        # matrix with versions to test against: 3.10, 3.11, and 3.12.
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      # Checkout the codebase.
+      - name: Checkout the codebase
+        uses: actions/checkout@v4
+      # Set up the python versions to test against.
+      - name: Setting up Python version ${{ matrix.python-version }}...
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: "x64"
+      # Install the dependencies.
+      - name: Installing dependencies...
+        # Install the dependencies along with a set of required packages; if requirements is present
+        # then, we install that as well.
+        run: |
+          python -m pip install -U pip
+          if [ -f requirements.txt ]; then pip install -r ./requirements.txt; fi
+          sudo snap install shfmt
+      # Python linting phase
+      - name: Running pre-commit hooks...
+        uses: pre-commit/action@v3.0.0
+      # Shell linting phase
+      - name: Running shell check...
+        uses: ludeeus/action-shellcheck@master
+      # Perform testing with pytest while generating coverage data.
+      - name: Perform testing with pytest including coverage
+        env:
+          LIBRARIES_API_KEY: ${{ secrets.LIBRARIES_API_KEY }}
+        run: |
+          coverage run -m pytest &&\
+          coverage-badge -f -o ${{ env.coverage-badge-filename }} && coverage report
+      # Verify that the coverage file changed.
+      - name: Verify Changed files
+        if: ${{ matrix.python-version == env.min-python }}
+        uses: tj-actions/verify-changed-files@v12
+        id: changed_files
+        with:
+          files: ${{ env.coverage-badge-filename }}
+      # Commit and push changes using the `gh` cli API because it allows us to produce verified commits.
+      - name: Commit & Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+          FILE_TO_COMMIT: ${{ env.coverage-badge-filename }}
+          DESTINATION_BRANCH: ${{ github.ref }}
+        if: steps.changed_files.outputs.files_changed == 'true'
+        run: |
+          export TODAY=$( date -u '+%Y-%m-%d' )
+          export MESSAGE="[skip ci] updated ${{ env.coverage-badge-filename }}"
+          export SHA=$( git rev-parse $DESTINATION_BRANCH:$FILE_TO_COMMIT )
+          export CONTENT=$( base64 -i $FILE_TO_COMMIT )
+          gh api --method PUT /repos/:owner/:repo/contents/$FILE_TO_COMMIT \
+            --field message="$MESSAGE" \
+            --field content="$CONTENT" \
+            --field encoding="base64" \
+            --field branch="$DESTINATION_BRANCH" \
+            --field sha="$SHA"
