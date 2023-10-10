@@ -3,6 +3,8 @@ import os
 
 from setuptools import find_packages, setup
 
+VERSION: str = "0.1.1"
+
 # get the current path
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 # construct the readme path
@@ -22,7 +24,7 @@ with open(REQS_PATH, "r", encoding="utf8") as req_file:
 if __name__ == "__main__":
     setup(
         name="quibraries",
-        version="0.1.0",
+        version=VERSION,
         author="Andreas A. Grammenos",
         author_email="axorl@quine.sh",
         description="A thread-safe Python wrapper for the libraries.io API",

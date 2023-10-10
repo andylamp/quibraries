@@ -1,0 +1,90 @@
+# Workflow used to publish the release to PyPi
+name: Publish release to PyPi
+
+# Only target the release branch
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    name: Build & Publish distribution packages
+    # This runner only runs on Ubuntu due to inherent dependencies
+    runs-on: ubuntu-latest
+
+    # requires both contents and id-tokens permissions in order to complete
+    permissions:
+      contents: write
+      id-token: write
+
+    # explicitly use the environment for releasing
+    environment: release
+
+    steps:
+      # Checkout the codebase at the target release
+      - name: Checkout the codebase
+        uses: actions/checkout@v4
+      # Extract the current version of the release
+      - name: Extract release version, if found, and assign
+        run: |
+          app_version=""
+          if grep -q VERSION setup.py; then
+            app_version=$(grep VERSION setup.py | grep -oP "[\d.]+")
+          else
+            exit 1
+          fi
+          echo "Discovered version: ${app_version}"
+          version_tag="v${app_version}"
+          # update the environment variables
+          echo "version_tag=${version_tag}" >> ${GITHUB_ENV}
+      # Check if the release tag already exists
+      - name: Check if the release tag already exists
+        uses: mukunku/tag-exists-action@v1.4.0
+        id: checkTag
+        with:
+          tag: ${{ env.version_tag }}
+      # Fail if the tag exists
+      - name: Fail if tag exists
+        run: |
+          if [[ "${{ steps.checkTag.outputs.exists }}" == "true" ]]; then
+            exit 1
+          else
+            echo "Version does not exist - we can continue"
+          fi
+      # Set up the python environment for releasing
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      # Install the pypa/build package, which allows us to actually build the packages
+      - name: Install PyPa Build
+        run: >-
+          python3 -m pip install build --user
+      # Build the packages
+      - name: Build the binary wheels and a source tarball
+        run: >-
+          python3 -m build
+      # Sign the dists with sigstore
+      - name: Sign the distributions with Sigstore
+        uses: sigstore/gh-action-sigstore-python@v2.1.0
+        with:
+          inputs: >-
+            ./dist/*.tar.gz
+            ./dist/*.whl
+      # Upload artifact signatures to GitHub Release
+      - name: Upload artifact signatures to GitHub Releases
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create '${{ env.version_tag }}' dist/** --generate-notes --repo '${{ github.repository }}'
+      # Delete signatures after releasing, so we can upload the files to PyPi
+      - name: Delete signatures so we can upload to PyPi
+        run: >-
+          rm ./dist/*.sigstore
+      # After everything, we can now publish to PyPi.
+      - name: Publish package to PyPi
+        env:
+          pypi-target: pypi
+          pypi-uri: https://pypi.org/p/quibraries
+        uses: pypa/gh-action-pypi-publish@unstable/v1
