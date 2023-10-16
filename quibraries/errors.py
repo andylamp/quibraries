@@ -2,7 +2,7 @@
 
 
 class APIKeyMissingError(Exception):
-    """Custom error for API Key missing."""
+    """Custom error for ``API`` Key missing."""
 
 
 class SessionNotInitialisedError(Exception):
@@ -14,19 +14,19 @@ class InvalidSessionClassSupplied(Exception):
 
 
 class UnnamedArgumentError(Exception):
-    """Raised when we encounter non-named arguments in an API `call`."""
+    """Raised when we encounter non-named arguments in an ``API`` call."""
 
 
 class InvalidSubscribeAPIOperationSupplied(Exception):
-    """Indicates that an unsupported subscribe API operation was provided."""
+    """Indicates that an unsupported subscribe ``API`` operation was provided."""
 
 
 class InvalidSearchAPIOperationSupplied(Exception):
-    """Indicates that an unsupported search API operation was provided."""
+    """Indicates that an unsupported search ``API`` operation was provided."""
 
 
 class InvalidHTTPOperationSupplied(Exception):
-    """Indicates that an unsupported HTTP operation was provided."""
+    """Indicates that an unsupported ``HTTP`` operation was provided."""
 
 
 class PaginationReceivedAnEmptyPageError(Exception):

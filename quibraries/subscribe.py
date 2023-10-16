@@ -1,4 +1,4 @@
-"""Module that includes the Subscribe API wrapper."""
+"""Module that includes the Subscribe ``API`` wrapper."""
 from typing import Callable, Iterator
 
 from .consts import QB_DEFAULT_PAGE, QB_DEFAULT_PER_PAGE
@@ -8,14 +8,14 @@ from .subscribe_ops import SubscribeOperationTypes
 
 
 class Subscribe:
-    """Class for `libraries.io <https://libraries.io>`_ API for changing user's subscriptions."""
+    """Class for `libraries.io <https://libraries.io>`_ ``API`` for changing user's subscriptions."""
 
     def __init__(self, api_key: str = ""):
         """
         Constructor responsible for initialising the `libraries.io <https://libraries.io>`_ session.
 
         Args:
-            api_key (str): The API key to use, if blank - it is expected to be present in the environment.
+            api_key (str): The ``API`` key to use, if blank - it is expected to be present in the environment.
         """
         self.session = LibIOSession(api_key)
 
@@ -23,7 +23,7 @@ class Subscribe:
         self, page: int = QB_DEFAULT_PAGE, per_page: int = QB_DEFAULT_PER_PAGE, iterated: bool = False
     ) -> dict | list | Iterator[dict | list]:
         """
-        Return a list of packages a user is subscribed to for release notifications.
+        Returns a list of packages a user is subscribed to for release notifications.
 
         Args:
             page (int): The page to get from the list, default is to get the first page.
@@ -74,7 +74,7 @@ class Subscribe:
             platform (str): The package manager name (e.g. PyPI).
             project (str): The package name.
         Returns:
-            (bool): `True` if subscribed to the package indicated, else ``False``.
+            (bool): ``True`` if subscribed to the package indicated, else ``False``.
         """
         return bool(
             SubscribeAPI.call(

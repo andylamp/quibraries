@@ -1,9 +1,9 @@
-"""Libraries.io Subscribe API operations."""
+"""`Libraries.io <https://libraries.io>`_ Subscribe ``API`` operations."""
 from enum import Enum
 
 
 class SubscribeOperationTypes(Enum):
-    """The Subscribe operation types enumeration as provided by libraries.io."""
+    """The Subscribe operation types enumeration as provided by `libraries.io <https://libraries.io>`_."""
 
     USER_SUBSCRIPTIONS: str = "user-subscriptions"
     """Performs the retrieval of the current user's given subscriptions."""

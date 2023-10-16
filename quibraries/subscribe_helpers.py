@@ -16,8 +16,8 @@ qb_logger = logging.getLogger(QB_LOGGER)
 # pylint: disable=too-few-public-methods
 class SubscribeAPI:
     """
-    The Subscribe API wrapper, which is responsible for calling the libraries.io `subscribe` API with
-    appropriately formatted requests.
+    The Subscribe API wrapper, which is responsible for calling the `libraries.io <https://libraries.io>`_ subscribe
+    ``API`` with appropriately formatted requests.
     """
 
     @staticmethod
@@ -25,18 +25,18 @@ class SubscribeAPI:
         op: SubscribeOperationTypes, sess: LibIOSessionBase, req_type: HttpOperation, *args, **kwargs
     ) -> list | dict:
         """
-        Build the query and call the subscribe API at libraries.io.
+        Build the query and call the subscribe ``API`` at `libraries.io <https://libraries.io>`_.
 
         Args:
-            op (str): action name.
-            sess (LibIOSessionBase): the session to use.
-            req_type (HttpOperation): The HTTP operation type.
+            op (SubscribeOperationTypes): The operation type.
+            sess (LibIOSessionBase): The session to use.
+            req_type (HttpOperation): The ``HTTP`` operation type.
             *args (): variadic positional arguments.
             **kwargs (): variadic keyword arguments.
 
         Returns:
             (list | dict): The response should contain dicts or list of dicts as per official documentation. The
-                page and amount of items returned is defined by the `page` and `per_page` arguments.
+                page and amount of items returned is defined by the ``page`` and ``per_page`` arguments.
         """
 
         if not isinstance(sess, LibIOSession):
@@ -57,19 +57,20 @@ class SubscribeAPI:
         op: SubscribeOperationTypes, sess: LibIOSessionBase, req_type: HttpOperation, *args, **kwargs
     ) -> Iterator[list | dict]:
         """
-        Build the query and call the subscribe API at libraries.io.
+        Build the query and call the subscribe ``API`` at `libraries.io <https://libraries.io>`_.
 
         Args:
-            op (str): action name.
+            op (SubscribeOperationTypes): The operation type.
             sess (LibIOSessionBase): the session to use.
-            req_type (HttpOperation): The HTTP operation type.
+            req_type (HttpOperation): The ``HTTP`` operation type.
             *args (): variadic positional arguments.
             **kwargs (): variadic keyword arguments.
 
         Returns:
-            (Iterator[list | dict]): Returns a consumable iterator of the response from libraries.io. The response
+            (Iterator[list | dict]): Returns a consumable iterator of the response from
+                `libraries.io <https://libraries.io>`_. The response
                 should contain dicts or list of dicts as per official documentation. The page and amount of items
-                returned is defined by the `page` and `per_page` arguments.
+                returned is defined by the ``page`` and ``per_page`` arguments.
         """
 
         if not isinstance(sess, LibIOSession):
@@ -115,7 +116,7 @@ class SubscribeAPI:
         The URI handler, which transforms arguments into the desired URI to be used when calling the API.
 
         Args:
-            op (SubscribeOperationTypes): the subscribe API operation to perform.
+            op (SubscribeOperationTypes): the subscribe ``API`` operation to perform.
             *args ():
             **kwargs (): the variadic keyword arguments.
 

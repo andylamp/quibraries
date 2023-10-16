@@ -1,4 +1,4 @@
-"""Module that contains the wrapper around the Search API for `libraries.io <https://libraries.io>`_."""
+"""Module that contains the wrapper around the Search ``API`` for `libraries.io <https://libraries.io>`_."""
 from typing import Callable, Iterator
 
 from .consts import QB_DEFAULT_PAGE, QB_DEFAULT_PER_PAGE, QB_DEFAULT_VERSION
@@ -42,10 +42,10 @@ class Search:
 
     def project(self, platform: str, project: str) -> dict | list:
         """
-        Return information about a project and its versions from a platform (e.g. PyPi).
+        Return information about a project and its versions from a platform (e.g. "PyPi").
 
         Args:
-            platform (str): The package manager (e.g. "PyPi").
+            platform (str): The package manager (e.g. ""PyPi"").
             project (str): The project name.
 
         Returns:
@@ -258,7 +258,7 @@ class Search:
         Returns information about a repository. Note, this currently only works for open source repositories.
 
         Args:
-            host (str): The host provider name (e.g. GitHub).
+            host (str): The host provider name (e.g. "GitHub").
             owner (str): The owner.
             repo (str): The repository name.
             page (int): The page to get from the list, default is to get the first page.
@@ -294,7 +294,7 @@ class Search:
         Returns a list with information about a repository's dependencies.
 
         Args:
-            host (str): The host provider name (e.g. GitHub).
+            host (str): The host provider name (e.g. "GitHub").
             owner (str): The owner.
             repo (str): The repository name.
             page (int): The page to get from the list, default is to get the first page.
@@ -330,7 +330,7 @@ class Search:
         Returns a list of projects referencing the given repository.
 
         Args:
-            host (str): The host provider name (e.g. GitHub)
+            host (str): The host provider name (e.g. "GitHub")
             owner (str): The repository owner.
             repo (str): The repository name.
             page (int): The page to get from the list, default is to get the first page.
@@ -358,7 +358,7 @@ class Search:
         Returns information about the given user.
 
         Args:
-            host (str): The name of host provider (e.g. GitHub).
+            host (str): The name of host provider (e.g. "GitHub").
             user (str): The username.
 
         Returns:
@@ -378,7 +378,7 @@ class Search:
         Returns a list with information about a user repos.
 
         Args:
-            host (str): The host provider name (e.g. GitHub).
+            host (str): The host provider name (e.g. "GitHub").
             user (str): The username.
             page (int): The page to get from the list, default is to get the first page.
             per_page (int): The items per page to return, the default is 30.
@@ -405,7 +405,7 @@ class Search:
         Returns a list of packages and their information referencing the given user's repositories.
 
         Args:
-            host (str): The host provider name (e.g. GitHub).
+            host (str): The host provider name (e.g. "GitHub").
             user (str): The username.
             page (int): The page to get from the list, default is to get the first page.
             per_page (int): The items per page to return, the default is 30.
@@ -432,7 +432,7 @@ class Search:
         Returns a list of packages that the given user has contributed to.
 
         Args:
-            host (str): The host provider name (e.g. GitHub).
+            host (str): The host provider name (e.g. "GitHub").
             user (str): The username.
             page (int): The page to get from the list, default is to get the first page.
             per_page (int): The items per page to return, the default is 30.
@@ -464,7 +464,7 @@ class Search:
         Returns a list with information about the repositories the given user has contributed to.
 
         Args:
-            host (str): The host provider name (e.g. GitHub).
+            host (str): The host provider name (e.g. "GitHub").
             user (str): The username.
             page (int): The page to get from the list, default is to get the first page.
             per_page (int): The items per page to return, the default is 30.
@@ -498,9 +498,9 @@ class Search:
         Ordered by frequency of use in those repositories. The request can be parameterised by `platform`.
 
         Args:
-            host (str): The host provider name (e.g. GitHub).
+            host (str): The host provider name (e.g. "GitHub").
             user (str): The username.
-            platform (str): The platform to search dependencies within (e.g. PyPi) - by default returns
+            platform (str): The platform to search dependencies within (e.g. "PyPi") - by default returns
                             results from any platform.
             page (int): The page to get from the list, default is to get the first page.
             per_page (int): The items per page to return, the default is 30.

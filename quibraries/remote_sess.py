@@ -1,4 +1,4 @@
-"""Describes the libraries.io session."""
+"""Module that implement the `libraries.io <https://libraries.io>`_ session keeper helper."""
 import logging
 import os
 
@@ -27,18 +27,18 @@ qbl = logging.getLogger(QB_LOGGER)
 
 class LibIOSessionBase:
     """
-    Class that implements the libraries.io session and keeps its state.
+    Class that implements the `libraries.io <https://libraries.io>`_ session and keeps its state.
     """
 
     def __init__(self, api_key: str = "", with_pagination: bool = True):
         """
-        Initialises the session using the provided API key, if any. If an API key is not provided it is assumed that it
-        resides as an environment variable and is accessible.
+        Initialises the session using the provided ``API`` key, if any. If an ``API`` key is not provided it is
+        assumed that it resides as an environment variable and is accessible.
 
         In any other case, an error will be raised when attempting to make a request.
 
         Args:
-            api_key (str): the libraries.io API key to be used in the calls.
+            api_key (str): the `libraries.io <https://libraries.io>`_ ``API`` key to be used in the calls.
             with_pagination (bool): flag that indicates if we'll automatically add pagination.
         """
         # session retry settings
@@ -119,7 +119,7 @@ class LibIOSessionBase:
 
     def set_key(self, key: str):
         """
-        Function that is responsible for setting the internal API key used for the requests.
+        Function that is responsible for setting the internal ``API`` key used for the requests.
 
         Args:
             key (str): the API to set.
@@ -150,17 +150,13 @@ class LibIOSessionBase:
 
     # noinspection PyUnresolvedReferences
     def clear_session_params(self):
-        """
-        Function that clears the session parameters.
-        """
+        """Function that clears the session parameters."""
         self._has_valid_session()
 
         self._sess.params.clear()  # type: ignore
 
     def _has_valid_session(self):
-        """
-        Function that checks if we have a valid session object - if not, an exception is raised.
-        """
+        """Function that checks if we have a valid session object - if not, an exception is raised."""
         if not self._sess:
             raise SessionNotInitialisedError("Session has not been yet initialised, cannot set retry behaviour.")
 
@@ -171,9 +167,9 @@ class LibIOSessionBase:
         Change pagination settings.
 
         Args:
-            sess (Session): the request session instance to use.
-            per_page (int | None): (optional) use this value instead of current session params.
-            page (int | None): (optional) use this value instead of current session params.
+            sess (Session): The request session instance to use.
+            per_page (int | None): If set, use this value instead of current session params.
+            page (int | None): If set, use this value instead of current session params.
 
         Returns:
             valid_values_range (bool): page and per_page values within valid range
@@ -205,11 +201,11 @@ class LibIOSessionBase:
         Internal method that performs the actual request.
 
         Args:
-            op (SearchOperationTypes | SubscribeOperationTypes): the API operation to perform.
-            req_type (str): get, post, put, or delete.
+            op (SearchOperationTypes | SubscribeOperationTypes): The ``API`` operation to perform.
+            req_type (HttpOperation): The request as described in :meth:`HttpOperation`.
 
         Returns:
-            resp (dict | list): the response from the performed request.
+            resp (dict | list): The response from the performed request.
         """
 
         kwargs.setdefault("uri_handler", None)
@@ -245,20 +241,18 @@ class LibIOSessionBase:
 
 
 class LibIOSession(LibIOSessionBase):
-    """
-    Used to perform regular, non-iterable requests to libraries.io API.
-    """
+    """Used to perform regular, non-iterable requests to `libraries.io <https://libraries.io>`_."""
 
     def __init__(self, api_key: str = ""):
         """
         The default constructor for the non-iterable requests. As its superclass, it initialises the session using
-        the provided API key, if any. If an API key is not provided it is assumed that it resides as an environment
-        variable and is accessible.
+        the provided ``API`` key, if any. If an API key is not provided it is assumed that it resides as an
+        environment variable and is accessible.
 
         In any other case, an error will be raised when attempting to make a request.
 
         Args:
-            api_key (str): the libraries.io API key to be used in the calls.
+            api_key (str): The `libraries.io <https://libraries.io>`_ ``API`` key to be used in the calls.
         """
         super().__init__(api_key=api_key)
 
@@ -271,14 +265,14 @@ class LibIOSession(LibIOSessionBase):
         **kwargs,
     ) -> dict | list:
         """
-        Make the request to libraries.io API.
+        Make the request to `libraries.io <https://libraries.io>`_ ``API``.
 
         Args:
-            op (str): the action to perform when making the request.
-            req_type (HttpOperation): Part of the :meth:`HttpOperation` enum which can be either get, post, put,
+            op (str): The action to perform when making the request.
+            req_type (HttpOperation): Part of the :mod:`HttpOperation` enum which can be either get, post, put,
             or delete.
         Returns:
-            ret (doct | list): `json` encoded response from libraries.io.
+            `(dict | list): Returns the :mod:``json`` encoded response from `libraries.io <https://libraries.io>`_.
         """
         ret: dict | list = {}
         try:
@@ -313,14 +307,14 @@ class LibIOIterableRequest:
         **kwargs,
     ):
         """
-        Default constructor for the request iterator for making libraries.io calls.
+        Default constructor for the request iterator for making `libraries.io <https://libraries.io>`_ calls.
 
         Args:
-            op (SearchOperationTypes | SubscribeOperationTypes): the action to perform.
-            req_type (HttpOperation): the request type - can only be `HttpOperation.GET`.
-            from_page (int): indicates which page we start from, default is 1.
-            items_per_page (int): dictates how many items should be returned per page, default is 30.
-            api_key (str): the api key to use.
+            op (SearchOperationTypes | SubscribeOperationTypes): The action to perform.
+            req_type (HttpOperation): The request type - can only be :ref:`HttpOperation.GET`.
+            from_page (int): Indicates which page we start from, default is 1.
+            items_per_page (int): Dictates how many items should be returned per page, default is 30.
+            api_key (str): The ``API`` key to use.
         """
         self.op = op
         if req_type != HttpOperation.GET:
@@ -348,7 +342,7 @@ class LibIOIterableRequest:
         self.args = args
 
     def __iter__(self):
-        """Just return the self and let `next` call to the actual work."""
+        """Just return the self and let ``next`` call to the actual work."""
         return self
 
     def __next__(self):

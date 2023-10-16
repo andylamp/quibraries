@@ -32,7 +32,7 @@ class ArgumentTypes(Enum):
 
 
 class TailEndpoints(Enum):
-    """Vantage endpoint constants for the tail of each endpoint as defined by libraries.io."""
+    """Vantage endpoint constants for the tail of each endpoint as defined by `libraries.io <https://libraries.io>`_"""
 
     PLATFORMS: str = "platforms"
     """The platforms tail endpoint."""

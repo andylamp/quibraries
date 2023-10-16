@@ -3,7 +3,7 @@ from enum import Enum
 
 
 class SearchSortTypes(Enum):
-    """The sort types accepted by libraries.io."""
+    """The sort types accepted by `libraries.io <https://libraries.io>`_."""
 
     CONTRIBUTIONS_COUNT: str = "contributions_count"
     """Sort by the contributions count."""
@@ -22,7 +22,7 @@ class SearchSortTypes(Enum):
 
 
 class SearchFilterTypes(Enum):
-    """The filter types accepted by libraries.io."""
+    """The filter types accepted by `libraries.io <https://libraries.io>`_."""
 
     LANGUAGES: str = "languages"
     """Enables filtering by language."""

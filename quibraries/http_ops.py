@@ -1,4 +1,4 @@
-"""Module containing the HTTP Operation enum."""
+"""Module containing the ``HTTP`` Operation enum."""
 from enum import Enum
 
 

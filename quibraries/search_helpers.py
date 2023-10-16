@@ -22,7 +22,7 @@ class SearchAPI:
     """
 
     default_req_type: HttpOperation = HttpOperation.GET
-    """The default request type used for the APIs."""
+    """The default request type used for the ``API`` calls."""
 
     @staticmethod
     def call(op: SearchOperationTypes, sess: LibIOSessionBase, **kwargs) -> list | dict:
@@ -30,13 +30,13 @@ class SearchAPI:
         Build the query and call the subscribe API at `libraries.io <https://libraries.io>`_.
 
         Args:
-            op (SearchOperationTypes): the operation type.
-            sess (LibIOSessionBase): the session to use.
-            **kwargs (): keyword arguments.
+            op (SearchOperationTypes): The operation type.
+            sess (LibIOSessionBase): The session to use.
+            **kwargs (): variadic keyword arguments.
 
         Returns:
             (list | dict): The response should contain dicts or list of dicts as per official documentation. The
-                page and amount of items returned is defined by the `page` and `per_page` arguments.
+                page and amount of items returned is defined by the ``page`` and ``per_page`` arguments.
         """
         if not isinstance(sess, LibIOSession):
             raise InvalidSessionClassSupplied
@@ -55,14 +55,15 @@ class SearchAPI:
         Build the iterated query and call the subscribe API at `libraries.io <https://libraries.io>`_.
 
         Args:
-            op (SearchOperationTypes): the operation type.
-            sess (LibIOSessionBase): the session to use.
-            **kwargs (): keyword arguments.
+            op (SearchOperationTypes): The operation type.
+            sess (LibIOSessionBase): The session to use.
+            **kwargs (): variadic keyword arguments.
 
         Returns:
-            (Iterator[list | dict]): Returns a consumable iterator of the response from libraries.io. The response
-                should contain dicts or list of dicts as per official documentation. The page and amount of items
-                returned is defined by the `page` and `per_page` arguments.
+            (Iterator[list | dict]): Returns a consumable iterator of the response from
+                `libraries.io <https://libraries.io>`_. The response should contain dicts or list of dicts as per
+                official documentation. The page and amount of items returned is defined by the ``page`` and
+                ``per_page`` arguments.
         """
 
         if not isinstance(sess, LibIOSession):
