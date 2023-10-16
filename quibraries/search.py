@@ -10,8 +10,8 @@ from .search_ops import SearchFilterTypes, SearchOperationTypes, SearchSortTypes
 # pylint: disable=too-many-arguments
 class Search:
     """
-    Class for wrapping the `libraries.io <https://libraries.io>`_ API for platform, project, repo,
-    and user GET actions.
+    Class for wrapping the `libraries.io <https://libraries.io>`_ ``API`` for platform, project, repo,
+    and user ``GET`` actions.
     """
 
     def __init__(self, api_key: str = ""):

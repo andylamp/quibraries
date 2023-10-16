@@ -30,8 +30,8 @@ class Subscribe:
             per_page (int): The items per page to return, the default is 30.
             iterated (bool): If the request is iterated or not - i.e. returns a consumable iterator.
         Returns:
-           (dict | list | Iterable[dict | list]): Dict with info for each package subscribed to at
-           `libraries.io <https://libraries.io>`_.
+           (dict | list | Iterable[dict | list]): Dict with info for each package subscribed to
+           at `libraries.io <https://libraries.io>`_.
         """
 
         return self._call(iterated)(
@@ -74,7 +74,7 @@ class Subscribe:
             platform (str): The package manager name (e.g. PyPI).
             project (str): The package name.
         Returns:
-            (bool): `True` if subscribed to the package indicated, else `False`.
+            (bool): `True` if subscribed to the package indicated, else ``False``.
         """
         return bool(
             SubscribeAPI.call(
@@ -97,7 +97,7 @@ class Subscribe:
         Args:
             platform (str): The package manager name (e.g. PyPI).
             project (str): The package name.
-            include_prerelease (bool): Include prerelease notifications, by default = `False`.
+            include_prerelease (bool): Include prerelease notifications, by default is ``False``.
 
         Returns:
             (dict | list): Update confirmation message.
