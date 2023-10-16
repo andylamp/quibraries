@@ -1,25 +1,31 @@
 """Module that includes helpers that for querying."""
-# pylint: skip-file
 
-from typing import Dict, List, Tuple, Union
+# compatibility for Python 3.10, these types are included by default from Python 3.11+
+try:
+    from typing import TypeVarTuple, Unpack  # type: ignore[attr-defined]
+except ImportError:
+    from typing_extensions import TypeVarTuple, Unpack  # type: ignore[attr-defined]
+
+from .errors import ArgumentMissingError
+
+ArgumentTypes = TypeVarTuple("ArgumentTypes")
+"""The Type for the variadic enumeration."""
 
 
-def extract(*keys):
-    class From:
-        def of(self, container: Union[Dict, List, Tuple]):
-            class Promise(list):  # workaround to allow monkeypatch to builtin list type
-                def then(self, f) -> List:  # type: ignore
-                    pass
+def from_kwargs(*keys: Unpack[ArgumentTypes], **kwargs: dict) -> list:
+    """
+    Extract values from kwargs based on a tuple of provided keys of type `ArgumentTypes`.
 
-            def then(f):
-                try:
-                    return [f(value) for value in values]
-                except (ValueError, TypeError):
-                    return [f(key, value) for key, value in zip(keys, values)]
+    Note that the values are provided in the order they are put in the `keys` tuple.
 
-            values = Promise()
-            values.extend([container.pop(k) for k in keys if k in container])  # type: ignore
-            values.then = then  # type: ignore
-            return values
+    Args:
+        *keys (Unpack[ArgumentTypes]): The keys to extract from kwargs.
+        **kwargs (dict): the variadic kwargs which hold the desired values.
 
-    return From()
+    Returns:
+        (list): the list with the values for the given keys.
+    """
+    try:
+        return [kwargs[key.value] for key in keys]  # type: ignore[attr-defined]
+    except KeyError as k_err:
+        raise ArgumentMissingError(f"Encountered missing argument, details: {k_err}") from k_err

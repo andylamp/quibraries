@@ -14,11 +14,7 @@ Welcome to Quibraries documentation!
    CONTRIBUTING
    CODE_OF_CONDUCT
    HISTORY
-
-.. autosummary::
-   :toctree: stubs
-
-   quibraries.search.Search
+   modules
 
 Indices and tables
 ==================

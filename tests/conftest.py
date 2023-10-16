@@ -6,10 +6,12 @@ from typing import Any
 import pytest
 from pyexpect import expect
 
-from quibraries import Search
+from quibraries import Search, Subscribe
 from quibraries.consts import QB_LOGGER
 
 API_KEY = os.getenv("LIBRARIES_API_KEY", "")
+
+_UNSUB_MSG: dict = {"status": "delete returned HTTP code of 204 with an empty body which means it was successful"}
 
 
 # pylint: disable=protected-access
@@ -39,6 +41,28 @@ def search_session() -> Search:
         (Search): The search instance to be returned for the test.
     """
     return Search(API_KEY)
+
+
+@pytest.fixture
+def subscribe_session() -> Subscribe:
+    """
+    Fixture that creates a subscribe session instance and returns it.
+
+    Returns:
+        (Subscribe): The subscribe instance to be returned for the test.
+    """
+    return Subscribe(API_KEY)
+
+
+@pytest.fixture
+def unsub_message() -> dict:
+    """
+    Fixture that returns the unsubscribe message in case of successful removal of subscription.
+
+    Returns:
+        dict
+    """
+    return _UNSUB_MSG
 
 
 @pytest.fixture

@@ -84,9 +84,9 @@ Ready to contribute? Here's how to set up `pybraries` for local development.
 
 #. To ensure code quality we use a few tools as `pre-commit hooks <https://pre-commit.com/>`_, which need to pass.
 
-#. When you're done making changes, check that your changes pass the test suite and Flake8::
+#. When you're done making changes, check that your changes pass the test suite and all ``pre-commit`` hooks.::
 
-    pytest flake8
+    pre-commit run --all-files && pytest .
 
 #. Commit your changes and push your branch to GitHub::
 
@@ -95,6 +95,15 @@ Ready to contribute? Here's how to set up `pybraries` for local development.
     git push origin name-of-your-bugfix-or-feature
 
 #. Submit a Pull Request (PR) through GitHub.
+
+`Note, you need a libraries.io API key as an environment variable with the name: ``LIBRARIES_API_KEY=<your_key>``
+to run the tests successfully`.
+
+To allow logging, you need to have the environment variable set as ``QB_LOG_ENABLED=True`` and setup the basic logger
+to accept the level of messages you want to receive. This can be accomplished by::
+
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
 
 If you are new to contributing to open source, check out `this guide <https://github.com/chalmerlowe/intro_to_sprinting>`_ by Chalmer Lowe.
 
@@ -122,25 +131,11 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The code should work for Python 3.8 and higher.
+3. The code should work for Python 3.10 and higher.
 
 Deploying
 ---------
 
-A reminder for the maintainers on how to deploy.
-
-#. Make sure all changes are committed (including an entry in history.rst).
-
-#. Then run::
-
-    bumpversion2 patch      # possible: major / minor / patch
-    git push
-    git push --tags
-
-#. Build with::
-
-    python setup.py sdist bdist_wheel
-
-#. Use twine to upload to PyPI.
-
-#. Update the Releases section on GitHub.
+The deployments happen automatically upon releasing to the ``release`` branch. Few checks happen to ensure that the
+releases do not cause any mess. Then, we can release simultaneously to both GitHub as well as PyPi though the trusted
+publishing flow. For more details, please see `here <https://docs.pypi.org/trusted-publishers/adding-a-publisher/>`_.

@@ -4,11 +4,11 @@ name: lint
 # lint on both push and PRs but not in the release branch
 on:
   push:
-    branches-ignore:
-      - release
+    branches:
+      - main
   pull_request:
-    branches-ignore:
-      - release
+    branches:
+      - main
 
 # The defined jobs
 jobs:

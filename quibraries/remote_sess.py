@@ -3,17 +3,26 @@ import logging
 import os
 
 import requests
+from requests import Session
 from requests.adapters import HTTPAdapter
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, RetryError
 
 # noinspection PyPackageRequirements
 from urllib3.util.retry import Retry
 
 from .consts import QB_DEFAULT_PAGE, QB_DEFAULT_PER_PAGE, QB_DEFAULT_STATUS_FORCELIST, QB_LOGGER
-from .errors import APIKeyMissingError, PaginationReceivedAnEmptyPageError, SessionNotInitialisedError
+from .errors import (
+    APIKeyMissingError,
+    InvalidHTTPOperationSupplied,
+    PaginationReceivedAnEmptyPageError,
+    SessionNotInitialisedError,
+)
+from .http_ops import HttpOperation
+from .search_ops import SearchOperationTypes
+from .subscribe_ops import SubscribeOperationTypes
 
-qb_log = logging.getLogger(QB_LOGGER)
-"""Fetch the logger with the appropriate tag."""
+qbl = logging.getLogger(QB_LOGGER)
+"""Our logger instance with the appropriate tag."""
 
 
 class LibIOSessionBase:
@@ -21,7 +30,7 @@ class LibIOSessionBase:
     Class that implements the libraries.io session and keeps its state.
     """
 
-    def __init__(self, api_key: str = ""):
+    def __init__(self, api_key: str = "", with_pagination: bool = True):
         """
         Initialises the session using the provided API key, if any. If an API key is not provided it is assumed that it
         resides as an environment variable and is accessible.
@@ -30,18 +39,21 @@ class LibIOSessionBase:
 
         Args:
             api_key (str): the libraries.io API key to be used in the calls.
+            with_pagination (bool): flag that indicates if we'll automatically add pagination.
         """
         # session retry settings
         self._retry_config = Retry(total=3, backoff_factor=0.2, status_forcelist=[500, 502, 503, 504])
         # the libraries.io API key
         self._api_key = os.environ.get("LIBRARIES_API_KEY", None) if not api_key else api_key
+        # set the pagination preferences
+        self._with_pagination = with_pagination
         # create the session
         self._create_session()
 
     def _create_session(self):
         """Common pattern that creates the internal session object."""
         # session object common properties
-        self._sess = requests.Session()
+        self._sess = Session()
         self._sess.mount("https://", HTTPAdapter(max_retries=self._retry_config))
         self.set_key(self.get_key())
 
@@ -49,23 +61,26 @@ class LibIOSessionBase:
     # pylint: disable=too-many-arguments
     def get_session(
         self,
+        req_type: HttpOperation,
         page: int | None = None,
         items_per_page: int | None = None,
         force_recreate: bool = False,
         include_prerelease: bool = False,
-    ) -> requests.Session:
+    ) -> Session:
         """
         Function that fetches the instantiated session object for libraries.io with desired API key and
         retry config.
 
         Args:
+            req_type (HttpOperation): The request type to see if we will support pagination as it is only supported in
+                `GET` requests.
             page (int | None): the page to return the query for, default is the first one.
             items_per_page (int | None): the items to return per page.
             force_recreate (bool): recreates the session instance.
             include_prerelease (bool): flag that indicates if we enable prerelease or not.
 
         Returns:
-            (requests.Session): returns the instantiated session.
+            (Session): returns the instantiated session.
         """
 
         # check if the session exists, if not create it
@@ -73,14 +88,15 @@ class LibIOSessionBase:
             self._create_session()
         else:
             # attach the api key to the parameters
-            self._sess.params["api_key"] = self.get_key()
+            self._sess.params["api_key"] = self.get_key()  # type: ignore
 
         # check if we need to enable the prerelease flag
         if include_prerelease:
-            self._sess.params["include_prerelease"] = 1
+            self._sess.params["include_prerelease"] = True  # type: ignore
 
-        # now also add the pagination bits
-        self.fix_pages(self._sess, page, items_per_page)
+        # now also add the pagination bits, if enabled
+        if req_type is req_type.GET:
+            self.fix_pages(self._sess, page, items_per_page)
 
         # finally, return the instantiated session object
         return self._sess
@@ -139,7 +155,7 @@ class LibIOSessionBase:
         """
         self._has_valid_session()
 
-        self._sess.params.clear()
+        self._sess.params.clear()  # type: ignore
 
     def _has_valid_session(self):
         """
@@ -150,12 +166,12 @@ class LibIOSessionBase:
 
     # noinspection PyTypeChecker,PyUnresolvedReferences
     @staticmethod
-    def fix_pages(sess: requests.Session, page: int | None = None, per_page: int | None = None) -> bool:
+    def fix_pages(sess: Session, page: int | None = None, per_page: int | None = None) -> bool:
         """
         Change pagination settings.
 
         Args:
-            sess (requests.Session): the request session instance to use.
+            sess (Session): the request session instance to use.
             per_page (int | None): (optional) use this value instead of current session params.
             page (int | None): (optional) use this value instead of current session params.
 
@@ -182,41 +198,49 @@ class LibIOSessionBase:
         valid_values_range = sess.params["page"] == page and sess.params["per_page"] == per_page  # type: ignore
         return valid_values_range
 
-    def request_factory(self, action: str, req_type: str, *args, **kwargs):
+    def request_factory(
+        self, op: SearchOperationTypes | SubscribeOperationTypes, req_type: HttpOperation, *args, **kwargs
+    ) -> dict | list:
         """
         Internal method that performs the actual request.
 
         Args:
-            action (str): the action to perform.
+            op (SearchOperationTypes | SubscribeOperationTypes): the API operation to perform.
             req_type (str): get, post, put, or delete.
 
         Returns:
-        Any: the response from the performed request.
+            resp (dict | list): the response from the performed request.
         """
 
         kwargs.setdefault("uri_handler", None)
         kwargs.setdefault("param_handler", None)
-        kwargs.setdefault("page", QB_DEFAULT_PAGE)
-        kwargs.setdefault("items_per_page", QB_DEFAULT_PER_PAGE)
 
-        if req_type not in ("get", "post", "put", "delete"):
-            raise ValueError("Request type can only be `get`, `put`, `delete`, or `post`.")
+        if req_type not in (HttpOperation.GET, HttpOperation.PUT, HttpOperation.POST, HttpOperation.DELETE):
+            raise InvalidHTTPOperationSupplied("Request type can only be `get`, `put`, `delete`, or `post`.")
 
-        uri: str = kwargs["uri_handler"](action, *args, **kwargs)
+        uri: str = kwargs["uri_handler"](op, *args, **kwargs)
 
         sess = self.get_session(
-            include_prerelease=bool(req_type == "post"), page=kwargs["page"], items_per_page=kwargs["items_per_page"]
+            req_type,
+            include_prerelease=bool(req_type == HttpOperation.POST),
+            page=kwargs["page"] if "page" in kwargs else None,
+            items_per_page=kwargs["items_per_page"] if "items_per_page" in kwargs else None,
         )
 
         if kwargs["param_handler"] is not None:
-            kwargs["param_handler"](action, sess.params, **kwargs)
+            kwargs["param_handler"](op, sess.params, **kwargs)
 
-        resp = getattr(
+        resp: requests.Response = getattr(
             sess,
-            req_type,
+            req_type.value,
         )(uri)
 
         resp.raise_for_status()
+
+        # workaround because libraries.io returns a 204 in a successful delete with an empty body.
+        if req_type is HttpOperation.DELETE and resp.status_code == 204 and not resp.text:
+            return {"status": "delete returned HTTP code of 204 with an empty body which means it was successful"}
+
         return resp.json()
 
 
@@ -227,36 +251,47 @@ class LibIOSession(LibIOSessionBase):
 
     def __init__(self, api_key: str = ""):
         """
-        The default constructor for the non-iterable requests.
+        The default constructor for the non-iterable requests. As its superclass, it initialises the session using
+        the provided API key, if any. If an API key is not provided it is assumed that it resides as an environment
+        variable and is accessible.
+
+        In any other case, an error will be raised when attempting to make a request.
 
         Args:
-            api_key (str): The desired API key to use.
+            api_key (str): the libraries.io API key to be used in the calls.
         """
         super().__init__(api_key=api_key)
 
     # pylint: disable=broad-except
     def make_request(
         self,
-        action: str,
-        req_type: str,
+        op: SearchOperationTypes | SubscribeOperationTypes,
+        req_type: HttpOperation,
         *args,
         **kwargs,
-    ) -> str:
-        """Make the request to libraries.io API
+    ) -> dict | list:
+        """
+        Make the request to libraries.io API.
 
         Args:
-            action (str): the action to perform when making the request.
-            req_type (str): get, post, put, or delete
+            op (str): the action to perform when making the request.
+            req_type (HttpOperation): Part of the :meth:`HttpOperation` enum which can be either get, post, put,
+            or delete.
         Returns:
-            `json` encoded response from libraries.io
+            ret (doct | list): `json` encoded response from libraries.io.
         """
-        ret = ""
+        ret: dict | list = {}
         try:
-            ret = self.request_factory(action, req_type, *args, **kwargs)
+            ret = self.request_factory(op, req_type, *args, **kwargs)
         except HTTPError as http_err:
-            qb_log.error("HTTP error occurred: %s", http_err)
+            qbl.error("HTTP error occurred with op: %s, details: %s", req_type.value, http_err)
+        except RetryError as ret_err:
+            if req_type is HttpOperation.DELETE:
+                qbl.debug("Retry error occurred with op: %s, possibly the item does not exist", req_type.value)
+            else:
+                qbl.error("Retry error occurred with op: %s, details: %s", req_type.value, ret_err)
         except Exception as err:
-            qb_log.error("Other error occurred: %s", err)
+            qbl.error("Other error occurred with op: %s, details: %s", req_type.value, err)
         finally:
             self.clear_session_params()
 
@@ -265,14 +300,15 @@ class LibIOSession(LibIOSessionBase):
 
 class LibIOIterableRequest:
     """
-    Class that facilitates iterated requests to facilitate a more user-friendly pagination functionality.
+    Class that facilitates iterated requests to facilitate a more user-friendly pagination functionality. Apart from
+    its constructor no other method is exposed.
     """
 
     # pylint: disable=too-many-arguments
     def __init__(
         self,
-        action: str,
-        req_type: str,
+        op: SearchOperationTypes | SubscribeOperationTypes,
+        req_type: HttpOperation,
         *args,
         **kwargs,
     ):
@@ -280,14 +316,14 @@ class LibIOIterableRequest:
         Default constructor for the request iterator for making libraries.io calls.
 
         Args:
-            action (str): the action to perform.
-            req_type (str): the request type - can be either `get` or `post`
+            op (SearchOperationTypes | SubscribeOperationTypes): the action to perform.
+            req_type (HttpOperation): the request type - can only be `HttpOperation.GET`.
             from_page (int): indicates which page we start from, default is 1.
             items_per_page (int): dictates how many items should be returned per page, default is 30.
             api_key (str): the api key to use.
         """
-        self.action = action
-        if req_type != "get":
+        self.op = op
+        if req_type != HttpOperation.GET:
             raise ValueError("Iterated Request type can only be of type `get`.")
         self.req_type = req_type
 
@@ -301,7 +337,7 @@ class LibIOIterableRequest:
         # check if we have a session, if we do not initialise it
         if kwargs["sess"] is None:
             self.sess = LibIOSessionBase(kwargs["api_key"])
-            self.sess.get_session()
+            self.sess.get_session(req_type)
         else:
             # we have an API key as our argument with a valid session - override the one inside it.
             self.sess.set_key(kwargs["api_key"])
@@ -312,7 +348,7 @@ class LibIOIterableRequest:
         self.args = args
 
     def __iter__(self):
-        """Just return the self and let `next`call to the actual work."""
+        """Just return the self and let `next` call to the actual work."""
         return self
 
     def __next__(self):
@@ -330,14 +366,16 @@ class LibIOIterableRequest:
             # likely pagination finished as we encountered an empty page, stop it.
             raise StopIteration from PaginationReceivedAnEmptyPageError
         except HTTPError as http_err:
-            qb_log.error(
+            qbl.error(
                 "An HTTP error was encountered during pagination of url: uri at page: %s), details: %s",
                 self.current_page,
                 http_err,
             )
             raise StopIteration from HTTPError
+        except TypeError as t_err:
+            raise TypeError(f"An unexpected type error encountered, details: {t_err}") from TypeError
         except Exception as exc:
-            qb_log.error("Something went wrong and an exception was raised, details %s.", exc)
+            qbl.error("Something went wrong and an exception was raised, details %s.", exc)
             raise StopIteration from Exception
 
         # finally, return the results
@@ -345,4 +383,7 @@ class LibIOIterableRequest:
 
     def _make_paginated_request(self):
         """Internal function that uses the request factory to perform a paginated request."""
-        return self.sess.request_factory(self.action, self.req_type, page=self.current_page, *self.args, **self.kwargs)
+        # update the current page to be our target page for the next request before making the call
+        self.kwargs["page"] = self.current_page
+        # make the iterated call
+        return self.sess.request_factory(self.op, self.req_type, *self.args, **self.kwargs)

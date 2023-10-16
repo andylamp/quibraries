@@ -74,20 +74,6 @@ repos:
     rev: '6.1.0'
     hooks:
       - id: flake8
-  # add sql-fluff
-  - repo: https://github.com/sqlfluff/sqlfluff
-    rev: '2.3.2'
-    hooks:
-      # add the linter
-      - id: sqlfluff-lint
-      # add the extra step used for local fixes
-        # we add here any potential additional dependencies that we might have - currently none.
-        # additional_dependencies: []
-      - id: sqlfluff-fix
-        # Arbitrary arguments to show an example
-        # args: [--rules, "L003,L014"]
-        # we add here any potential additional dependencies that we might have - currently none.
-        # additional_dependencies: []
   # add bandit
   - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
     rev: 'v1.0.6'
@@ -96,10 +82,14 @@ repos:
         args: [--exclude ./venv]
   # add mypy
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.5.1'
+    rev: 'v1.6.0'
     hooks:
       - id: mypy
-        args: ["--show-error-codes", "--ignore-missing-imports"]
+        args: ["--show-error-codes",
+               "--ignore-missing-imports",
+               "--check-untyped-defs",
+               "--enable-incomplete-feature=TypeVarTuple",
+               "--enable-incomplete-feature=Unpack"]
         additional_dependencies: [ types-requests ]
   # use local repository hooks so we can discover libraries.
   - repo: local

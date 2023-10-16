@@ -2,7 +2,7 @@ version: 2
 
 # use a bit more modern tools to build the docs
 build:
-  os: ubuntu-20.04
+  os: ubuntu-22.04
   tools:
     python: "3.10"
 
@@ -10,6 +10,7 @@ build:
 sphinx:
    configuration: docs/conf.py
 
+# install the `dev` requirements
 python:
   install:
     - requirements: requirements.txt

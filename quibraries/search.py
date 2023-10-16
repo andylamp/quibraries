@@ -1,10 +1,13 @@
-"""Module that contains the wrapper around the Search API for libraries.io"""
-from typing import Any, Optional
+"""Module that contains the wrapper around the Search API for libraries.io."""
+from typing import Callable, Iterator
 
+from .consts import QB_DEFAULT_PAGE, QB_DEFAULT_PER_PAGE, QB_DEFAULT_VERSION
 from .remote_sess import LibIOSession
 from .search_helpers import SearchAPI
+from .search_ops import SearchFilterTypes, SearchOperationTypes, SearchSortTypes
 
 
+# pylint: disable=too-many-arguments
 class Search:
     """Class for wrapping the libraries.io API for platform, project, repo, and user GET actions."""
 
@@ -13,262 +16,504 @@ class Search:
         Constructor responsible for initialising the Libraries.io session.
 
         Args:
-            api_key (str): the API key to use, if blank - it is expected to be present in the environment.
+            api_key (str): The API key to use, if blank - it is expected to be present in the environment.
         """
         self.session = LibIOSession(api_key)
 
-    def platforms(self) -> Any:
+    def platforms(
+        self, page: int = QB_DEFAULT_PAGE, per_page: int = QB_DEFAULT_PER_PAGE, iterated: bool = False
+    ) -> list | dict | Iterator[list | dict]:
         """
         Return a list of supported package managers.
 
+        Args:
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool): Flag that indicates if we are to return a consumable iterator for pagination.
         Returns:
-            (Any): List of dicts of platforms with platform info from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of platforms with platform info from libraries.io.
         """
 
-        return SearchAPI.call("platforms", self.session)
+        return self._call(iterated)(SearchOperationTypes.PLATFORMS, self.session, page=page, per_page=per_page)
 
-    def project(self, platforms: str, name: str) -> Any:
+    def project(self, platform: str, project: str) -> dict | list:
         """
         Return information about a project and its versions from a platform (e.g. PyPI).
 
         Args:
-            platforms (str): package manager (e.g. "pypi").
-            name (str): project name.
+            platform (str): The package manager (e.g. "pypi").
+            project (str): The project name.
 
         Returns:
-            (Any): List of dictionaries with information about the project from libraries.io.
+            (dict | list): List of dictionaries with information about the project from libraries.io.
         """
-        return SearchAPI.call("project", self.session, platforms, name)
+        return SearchAPI.call(SearchOperationTypes.PROJECT, self.session, platform=platform, project=project)
 
-    def project_dependencies(self, platforms: str, project: str, version: Optional[str] = None) -> Any:
+    def project_dependencies(
+        self,
+        platform: str,
+        project: str,
+        version: str = QB_DEFAULT_VERSION,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> dict | list | Iterator[dict | list]:
         """
-        Get dependencies for a version of a project.
-
-        Returns the latest version info.
+        Get a list of dependencies for a given `version` of a `project`. By default, it returns the dependencies for
+        the latest version on record.
 
         Args:
-            platforms (str): package manager (e.g. "pypi").
-            project (str): project name.
-            version (Optional[str]): (optional) project version.
+            platform (str): The package manager (e.g. "pypi").
+            project (str): The project name.
+            version (str): The project version, by default it is equal to 'latest'.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool): Flag that indicates if we are to return a consumable iterator for pagination.
 
         Returns:
-            (Any): Dict of dependencies for a version of a project from libraries.io.
+            (dict | list | Iterator[dict | list]): Dict of dependencies for a version of a project from libraries.io.
         """
+        return self._call(iterated)(
+            SearchOperationTypes.PROJECT_DEPENDENCIES,
+            self.session,
+            platform=platform,
+            project=project,
+            version=version,
+            page=page,
+            per_page=per_page,
+        )
 
-        return SearchAPI.call("project_dependencies", self.session, platforms, project, version=version)
-
-    def project_dependents(self, platforms: str, project: str, version: Optional[str] = None) -> Any:
+    def project_dependents(
+        self,
+        platform: str,
+        project: str,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Get projects that have at least one version that depends on a given project.
+        Gets the list of projects that have at least one `version` that depends on a given `project`. By default, it
+        returns information for the most recent version of the project libraries.io has on their record.
 
         Args:
-            platforms (str): package manager (e.g. "pypi").
-            project (str): project name.
-            version (Optional[str]): project version.
+            platform (str): The package manager (e.g. "pypi").
+            project (str): The project name.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool): Flag that indicates if we are to return a consumable iterator for pagination.
 
         Returns:
-            (Any): List of dicts project dependents from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts project dependents from libraries.io.
         """
 
-        return SearchAPI.call("project_dependents", self.session, platforms, project, version=version)
+        return self._call(iterated)(
+            SearchOperationTypes.PROJECT_DEPENDENTS,
+            self.session,
+            platform=platform,
+            project=project,
+            page=page,
+            per_page=per_page,
+        )
 
-    def project_dependent_repositories(self, platforms: str, project: str) -> Any:
+    def project_dependent_repositories(
+        self,
+        platform: str,
+        project: str,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Get repositories that depend on a given project.
+        Get a list of repositories that depend on a given project.
 
         Args:
-            platforms (str): package manager (e.g. "pypi").
-            project (str): project name.
+            platform (str): The package manager (e.g. "pypi").
+            project (str): The project name.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool): Flag that indicates if we are to return a consumable iterator for pagination.
 
         Returns:
-            (Any): List of dicts of dependent repositories from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of dependent repositories from libraries.io.
         """
 
-        return SearchAPI.call("project_dependent_repositories", self.session, platforms, project)
+        return self._call(iterated)(
+            SearchOperationTypes.PROJECT_DEPENDENT_REPOSITORIES,
+            self.session,
+            platform=platform,
+            project=project,
+            page=page,
+            per_page=per_page,
+        )
 
-    def project_contributors(self, platforms: str, project: str) -> Any:
+    def project_contributors(
+        self,
+        platform: str,
+        project: str,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Get users that have contributed to a given project.
+        Get a list of users that have contributed to a given project.
 
         Args:
-            platforms (str): package manager.
-            project (str): project name.
+            platform (str): The package manager.
+            project (str): The project name.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool): Flag that indicates if we are to return a consumable iterator for pagination.
 
         Returns:
-            (Any): List of dicts of project contributor info from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of project contributor info from libraries.io.
         """
 
-        return SearchAPI.call("project_contributors", self.session, platforms, project)
+        return self._call(iterated)(
+            SearchOperationTypes.PROJECT_CONTRIBUTORS,
+            self.session,
+            platform=platform,
+            project=project,
+            page=page,
+            per_page=per_page,
+        )
 
-    def project_sourcerank(self, platforms: str, project: str) -> Any:
+    def project_sourcerank(self, platform: str, project: str) -> list | dict:
         """
         Get breakdown of SourceRank score for a given project.
 
         Args:
-            platforms (str): package manager.
-            project (str): project name.
+            platform (str): The package manager.
+            project (str): The project name.
 
         Returns:
-            (Any): Dict of sourcerank info response from libraries.io.
+            (list | dict): Dict of sourcerank info response from libraries.io.
         """
 
-        return SearchAPI.call("project_sourcerank", self.session, platforms, project)
+        return SearchAPI.call(
+            SearchOperationTypes.PROJECT_SOURCERANK, self.session, platform=platform, project=project
+        )
 
-    def project_usage(self, platforms: str, project: str) -> Any:
+    def project_search(
+        self,
+        query: str = "",
+        filters: dict[SearchFilterTypes, set[str]] | None = None,
+        sort: SearchSortTypes | None = None,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Get breakdown of usage for a given project.
+        Search for projects, which mimics the functionality provided by libraries.io. To ensure type safety and avoid
+        mishaps the sorting and filtering types have been encapsulated into two enumerations, :meth:`SearchFilterTypes`
+        and :meth:`SearchSortTypes`.
+
+        An example of how to use it is as follows,
+
 
         Args:
-            platforms (str): package manager.
-            project (str): project name.
+            query (str): The query to search for, by default it is empty.
+            filters (dict[SearchFilterTypes, set[str]] | None): The filters to perform, as described
+            in `SearchFilterTypes`.
+            sort (SearchSortTypes | None): One of options defined in `SearchSortTypes` enumeration.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool = False): Indicates if the request should return a consumable iterator for easier
+            pagination.
 
         Returns:
-            (Any): Dict with info about usage from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of project info from libraries.io.
         """
 
-        return SearchAPI.call("project_usage", self.session, platforms, project)
+        return self._call(iterated)(
+            SearchOperationTypes.PROJECT_SEARCH,
+            self.session,
+            query=query,
+            filters=filters,
+            sort=sort,
+            page=page,
+            per_page=per_page,
+        )
 
-    def project_search(self, **kwargs):
+    def repository(
+        self,
+        host: str,
+        owner: str,
+        repo: str,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Search for projects.
-
-        Args - keywords only:
-            keywords (str):  required argument: keywords to search
-            languages (str): optional programming languages to filter
-            licenses (str): license type to filter
-            platforms (str): platforms to filter
-
-            sort (str): (optional) one of rank, stars,
-                dependents_count, dependent_repos_count,
-                latest_release_published_at, contributions_count, created_at
-
-        Returns:
-            (Any): List of dicts of project info from libraries.io.
-        """
-        kwargs.setdefault("iterated", False)
-        return SearchAPI.call("special_project_search", self.session, **kwargs)
-
-    def repository(self, host: str, owner: str, repo: str) -> Any:
-        """
-        Return information about a repository and its versions.
+        Returns information about a repository. Note, this currently only works for open source repositories.
 
         Args:
-            host (str): host provider name (e.g. GitHub).
-            owner (str): owner.
-            repo (str): the repository name.
+            host (str): The host provider name (e.g. GitHub).
+            owner (str): The owner.
+            repo (str): The repository name.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool = False): Indicates if the request should return a consumable iterator for easier
+            pagination.
 
         Returns:
-            (Any): List of dicts of info about a repository from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of info about a repository from libraries.io.
         """
 
-        return SearchAPI.call("repository", self.session, host, owner, repo)
+        return self._call(iterated)(
+            SearchOperationTypes.REPOSITORY,
+            self.session,
+            host=host,
+            owner=owner,
+            repo=repo,
+            page=page,
+            per_page=per_page,
+        )
 
-    def repository_dependencies(self, host: str, owner: str, repo: str) -> Any:
+    def repository_dependencies(
+        self,
+        host: str,
+        owner: str,
+        repo: str,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Return information about a repository's dependencies.
+        Returns a list with information about a repository's dependencies.
 
         Args:
-            host (str): host provider name (e.g. GitHub).
-            owner (str): owner.
-            repo (str): the repository name.
+            host (str): The host provider name (e.g. GitHub).
+            owner (str): The owner.
+            repo (str): The repository name.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool = False): Indicates if the request should return a consumable iterator for easier
+                pagination.
 
         Returns:
-            (Any): Dict of repo dependency info from libraries.io.
+            (list | dict | Iterator[list | dict]): Dict of repo dependency info from libraries.io.
         """
 
-        return SearchAPI.call("repository_dependencies", self.session, host, owner, repo)
+        return self._call(iterated)(
+            SearchOperationTypes.REPOSITORY_DEPENDENCIES,
+            self.session,
+            host=host,
+            owner=owner,
+            repo=repo,
+            page=page,
+            per_page=per_page,
+        )
 
-    def repository_projects(self, host: str, owner: str, repo: str) -> Any:
+    def repository_projects(
+        self,
+        host: str,
+        owner: str,
+        repo: str,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Get a list of projects referencing the given repository.
+        Returns a list of projects referencing the given repository.
 
         Args:
-            host (str): host provider name (e.g. GitHub)
-            owner (str): the repository owner.
-            repo (str): the repository name.
+            host (str): The host provider name (e.g. GitHub)
+            owner (str): The repository owner.
+            repo (str): The repository name.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool = False): Indicates if the request should return a consumable iterator for easier
+                pagination.
 
         Returns:
-            (Any): List of dicts of projects referencing a repo from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of projects referencing a repo from libraries.io.
         """
 
-        return SearchAPI.call("repository_projects", self.session, host, owner, repo)
+        return self._call(iterated)(
+            SearchOperationTypes.REPOSITORY_PROJECTS,
+            self.session,
+            host=host,
+            owner=owner,
+            repo=repo,
+            page=page,
+            per_page=per_page,
+        )
 
-    def user(self, host: str, user: str) -> Any:
+    def user(self, host: str, user: str) -> list | dict:
         """
-        Return information about a user.
+        Returns information about the given user.
 
         Args:
-            host (str): host provider name (e.g. GitHub).
-            user (str): username.
+            host (str): The name of host provider (e.g. GitHub).
+            user (str): The username.
 
         Returns:
-            (Any): Dict of info about user from libraries.io.
+            (list | dict): Dict of info about user from libraries.io.
         """
-        return SearchAPI.call("user", self.session, host, user)
+        return SearchAPI.call(SearchOperationTypes.USER, self.session, host=host, user=user)
 
-    def user_repositories(self, host: str, user: str) -> Any:
+    def user_repositories(
+        self,
+        host: str,
+        user: str,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Return information about a user's repos.
+        Returns a list with information about a user repos.
 
         Args:
-            host (str): host provider name (e.g. GitHub).
-            user (str): username.
+            host (str): The host provider name (e.g. GitHub).
+            user (str): The username.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool = False): Indicates if the request should return a consumable iterator for easier
+                pagination.
 
         Returns:
-           (Any): List of dicts with info about user repos from libraries.io.
+           (list | dict | Iterator[list | dict]): List of dicts with info about user repos from libraries.io.
         """
-        return SearchAPI.call("user_repositories", self.session, host, user)
+        return self._call(iterated)(
+            SearchOperationTypes.USER_REPOSITORIES, self.session, host=host, user=user, page=page, per_page=per_page
+        )
 
-    def user_projects(self, host: str, user: str) -> Any:
+    def user_packages(
+        self,
+        host: str,
+        user: str,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Return information about projects using a user's repos.
+        Returns a list of packages and their information referencing the given user's repositories.
 
         Args:
-            host (str): host provider name (e.g. GitHub).
-            user (str): username.
+            host (str): The host provider name (e.g. GitHub).
+            user (str): The username.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool = False): Indicates if the request should return a consumable iterator for easier
+                pagination.
 
         Returns:
-            (Any): List of dicts of project info from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of user packages info from libraries.io.
         """
-        return SearchAPI.call("user_projects", self.session, host, user)
+        return self._call(iterated)(
+            SearchOperationTypes.USER_PACKAGES, self.session, host=host, user=user, page=page, per_page=per_page
+        )
 
-    def user_projects_contributions(self, host: str, user: str) -> Any:
+    def user_packages_contributions(
+        self,
+        host: str,
+        user: str,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Return information about projects a user has contributed to.
+        Returns a list of packages that the given user has contributed to.
 
         Args:
-            host (str): host provider name (e.g. GitHub).
-            user (str): username.
+            host (str): The host provider name (e.g. GitHub).
+            user (str): The username.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool = False): Indicates if the request should return a consumable iterator for easier
+                pagination.
 
         Returns:
-            (Any): List of dicts with user project contribution info from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts with user packages contribution info from
+            libraries.io.
         """
-        return SearchAPI.call("user_projects_contributions", self.session, host, user)
+        return self._call(iterated)(
+            SearchOperationTypes.USER_PACKAGES_CONTRIBUTIONS,
+            self.session,
+            host=host,
+            user=user,
+            page=page,
+            per_page=per_page,
+        )
 
-    def user_repository_contributions(self, host: str, user: str) -> Any:
+    def user_repository_contributions(
+        self,
+        host: str,
+        user: str,
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Return information about repositories a user has contributed to.
+        Returns a list with information about the repositories the given user has contributed to.
 
         Args:
-            host (str): host provider name (e.g. GitHub).
-            user (str): username.
+            host (str): The host provider name (e.g. GitHub).
+            user (str): The username.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool = False): Indicates if the request should return a consumable iterator for easier
+                pagination.
 
         Returns:
-            (Any): list of dicts response from libraries.io
+            (list | dict | Iterator[list | dict]): List of dicts response from libraries.io
         """
-        return SearchAPI.call("user_repositories_contributions", self.session, host, user)
+        return self._call(iterated)(
+            SearchOperationTypes.USER_REPOSITORY_CONTRIBUTIONS,
+            self.session,
+            host=host,
+            user=user,
+            page=page,
+            per_page=per_page,
+        )
 
-    def user_dependencies(self, host, user):
+    def user_dependencies(
+        self,
+        host: str,
+        user: str,
+        platform: str = "",
+        page: int = QB_DEFAULT_PAGE,
+        per_page: int = QB_DEFAULT_PER_PAGE,
+        iterated: bool = False,
+    ) -> list | dict | Iterator[list | dict]:
         """
-        Return a list of unique user's repositories' dependencies.
+        Returns a list of the unique packages that the given user's repositories list as a dependency.
 
-        Ordered by frequency of use in those repositories.
+        Ordered by frequency of use in those repositories. The request can be parameterised by `platform`.
 
         Args:
-            host (str): host provider name (e.g. GitHub).
-            user (str): username.
+            host (str): The host provider name (e.g. GitHub).
+            user (str): The username.
+            platform (str): The platform to search dependencies within (e.g. PyPi) - by default returns
+                            results from any platform.
+            page (int): The page to get from the list, default is to get the first page.
+            per_page (int): The items per page to return, the default is 30.
+            iterated (bool = False): Indicates if the request should return a consumable iterator for easier
+                            pagination.
 
         Returns:
-            (Any): List of dicts with user project dependency info.
+            (list | dict | Iterator[list | dict]): List of dicts with user project dependency info.
         """
-        return SearchAPI.call("user_dependencies", self.session, host, user)
+        return self._call(iterated)(
+            SearchOperationTypes.USER_DEPENDENCIES,
+            self.session,
+            host=host,
+            user=user,
+            platform=platform,
+            page=page,
+            per_page=per_page,
+        )
+
+    @staticmethod
+    def _call(iterated: bool) -> Callable:
+        """
+        Nifty little utility to call the appropriate API calling function in case we support both regular and
+        :meth:`Iterator` requests.
+
+        Args:
+            iterated (bool): Flag that indicates which type of callable to return.
+
+        Returns:
+            (Callable): Returns the appropriate function based if it is :meth:`Iterator` or not.
+        """
+        return SearchAPI.call_iterated if iterated else SearchAPI.call

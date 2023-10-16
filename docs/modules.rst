@@ -1,7 +1,7 @@
-Quibraries
+Reference
 =============
 
-.. automodule:: quibraries.search
+.. automodule:: quibraries
     :members:
 
 .. toctree::

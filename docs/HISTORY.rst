@@ -2,6 +2,13 @@
 History
 =======
 
+0.2.0 (2023-10-16)
+------------------
+
+* Complete refactor of how the functionality is provided under the hood; however, external API remains unchanged.
+* Drop support for Python versions _less_ than 3.10 due to maintenance overhead.
+* Bumped requirements, pre-commit hook versions.
+
 0.0.4 (2023-04-24)
 ------------------
 
