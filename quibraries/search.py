@@ -38,10 +38,10 @@ class Search:
 
     def project(self, platform: str, project: str) -> dict | list:
         """
-        Return information about a project and its versions from a platform (e.g. PyPI).
+        Return information about a project and its versions from a platform (e.g. PyPi).
 
         Args:
-            platform (str): The package manager (e.g. "pypi").
+            platform (str): The package manager (e.g. "PyPi").
             project (str): The project name.
 
         Returns:
@@ -63,7 +63,7 @@ class Search:
         the latest version on record.
 
         Args:
-            platform (str): The package manager (e.g. "pypi").
+            platform (str): The package manager (e.g. "PyPi").
             project (str): The project name.
             version (str): The project version, by default it is equal to 'latest'.
             page (int): The page to get from the list, default is to get the first page.
@@ -96,7 +96,7 @@ class Search:
         returns information for the most recent version of the project libraries.io has on their record.
 
         Args:
-            platform (str): The package manager (e.g. "pypi").
+            platform (str): The package manager (e.g. "PyPi").
             project (str): The project name.
             page (int): The page to get from the list, default is to get the first page.
             per_page (int): The items per page to return, the default is 30.
@@ -127,7 +127,7 @@ class Search:
         Get a list of repositories that depend on a given project.
 
         Args:
-            platform (str): The package manager (e.g. "pypi").
+            platform (str): The package manager (e.g. "PyPi").
             project (str): The project name.
             page (int): The page to get from the list, default is to get the first page.
             per_page (int): The items per page to return, the default is 30.
