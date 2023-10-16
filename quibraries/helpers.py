@@ -2,9 +2,9 @@
 
 # compatibility for Python 3.10, these types are included by default from Python 3.11+
 try:
-    from typing import TypeVarTuple, Unpack  # type: ignore[attr-defined]
+    from typing import TypeVarTuple, Unpack  # type: ignore[attr-defined,assignment]
 except ImportError:
-    from typing_extensions import TypeVarTuple, Unpack  # type: ignore[attr-defined]
+    from typing_extensions import TypeVarTuple, Unpack  # type: ignore[attr-defined,assignment]
 
 from .errors import ArgumentMissingError
 
