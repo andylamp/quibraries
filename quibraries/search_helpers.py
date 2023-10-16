@@ -17,8 +17,8 @@ qbl = logging.getLogger(QB_LOGGER)
 # pylint: disable=too-few-public-methods
 class SearchAPI:
     """
-    The Search API wrapper, which is responsible for calling the libraries.io `search` API with appropriately
-    formatted requests.
+    The Search API wrapper, which is responsible for calling the `libraries.io <https://libraries.io>`_ `search`
+    API with appropriately formatted requests.
     """
 
     default_req_type: HttpOperation = HttpOperation.GET
@@ -27,7 +27,7 @@ class SearchAPI:
     @staticmethod
     def call(op: SearchOperationTypes, sess: LibIOSessionBase, **kwargs) -> list | dict:
         """
-        Build the query and call the subscribe API at libraries.io.
+        Build the query and call the subscribe API at `libraries.io <https://libraries.io>`_.
 
         Args:
             op (SearchOperationTypes): the operation type.
@@ -52,7 +52,7 @@ class SearchAPI:
     @staticmethod
     def call_iterated(op: SearchOperationTypes, sess: LibIOSessionBase, **kwargs) -> Iterator[list | dict]:
         """
-        Build the iterated query and call the subscribe API at libraries.io.
+        Build the iterated query and call the subscribe API at `libraries.io <https://libraries.io>`_.
 
         Args:
             op (SearchOperationTypes): the operation type.

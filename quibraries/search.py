@@ -1,4 +1,4 @@
-"""Module that contains the wrapper around the Search API for libraries.io."""
+"""Module that contains the wrapper around the Search API for `libraries.io <https://libraries.io>`_."""
 from typing import Callable, Iterator
 
 from .consts import QB_DEFAULT_PAGE, QB_DEFAULT_PER_PAGE, QB_DEFAULT_VERSION
@@ -9,11 +9,14 @@ from .search_ops import SearchFilterTypes, SearchOperationTypes, SearchSortTypes
 
 # pylint: disable=too-many-arguments
 class Search:
-    """Class for wrapping the libraries.io API for platform, project, repo, and user GET actions."""
+    """
+    Class for wrapping the `libraries.io <https://libraries.io>`_ API for platform, project, repo,
+    and user GET actions.
+    """
 
     def __init__(self, api_key: str = ""):
         """
-        Constructor responsible for initialising the Libraries.io session.
+        Constructor responsible for initialising the `libraries.io <https://libraries.io>`_ session.
 
         Args:
             api_key (str): The API key to use, if blank - it is expected to be present in the environment.
@@ -31,7 +34,8 @@ class Search:
             per_page (int): The items per page to return, the default is 30.
             iterated (bool): Flag that indicates if we are to return a consumable iterator for pagination.
         Returns:
-            (list | dict | Iterator[list | dict]): List of dicts of platforms with platform info from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of platforms with platform info from
+            `libraries.io <https://libraries.io>`_.
         """
 
         return self._call(iterated)(SearchOperationTypes.PLATFORMS, self.session, page=page, per_page=per_page)
@@ -45,7 +49,8 @@ class Search:
             project (str): The project name.
 
         Returns:
-            (dict | list): List of dictionaries with information about the project from libraries.io.
+            (dict | list): List of dictionaries with information about the project from
+            `libraries.io <https://libraries.io>`_.
         """
         return SearchAPI.call(SearchOperationTypes.PROJECT, self.session, platform=platform, project=project)
 
@@ -71,7 +76,8 @@ class Search:
             iterated (bool): Flag that indicates if we are to return a consumable iterator for pagination.
 
         Returns:
-            (dict | list | Iterator[dict | list]): Dict of dependencies for a version of a project from libraries.io.
+            (dict | list | Iterator[dict | list]): Dict of dependencies for a version of a project from
+            `libraries.io <https://libraries.io>`_.
         """
         return self._call(iterated)(
             SearchOperationTypes.PROJECT_DEPENDENCIES,
@@ -93,7 +99,8 @@ class Search:
     ) -> list | dict | Iterator[list | dict]:
         """
         Gets the list of projects that have at least one `version` that depends on a given `project`. By default, it
-        returns information for the most recent version of the project libraries.io has on their record.
+        returns information for the most recent version of the project `libraries.io <https://libraries.io>`_ has on
+        their record.
 
         Args:
             platform (str): The package manager (e.g. "PyPi").
@@ -103,7 +110,8 @@ class Search:
             iterated (bool): Flag that indicates if we are to return a consumable iterator for pagination.
 
         Returns:
-            (list | dict | Iterator[list | dict]): List of dicts project dependents from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts project dependents from
+            `libraries.io <https://libraries.io>`_.
         """
 
         return self._call(iterated)(
@@ -134,7 +142,8 @@ class Search:
             iterated (bool): Flag that indicates if we are to return a consumable iterator for pagination.
 
         Returns:
-            (list | dict | Iterator[list | dict]): List of dicts of dependent repositories from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of dependent repositories from
+            `libraries.io <https://libraries.io>`_.
         """
 
         return self._call(iterated)(
@@ -165,7 +174,8 @@ class Search:
             iterated (bool): Flag that indicates if we are to return a consumable iterator for pagination.
 
         Returns:
-            (list | dict | Iterator[list | dict]): List of dicts of project contributor info from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of project contributor info from
+            `libraries.io <https://libraries.io>`_.
         """
 
         return self._call(iterated)(
@@ -186,7 +196,7 @@ class Search:
             project (str): The project name.
 
         Returns:
-            (list | dict): Dict of sourcerank info response from libraries.io.
+            (list | dict): Dict of sourcerank info response from `libraries.io <https://libraries.io>`_.
         """
 
         return SearchAPI.call(
@@ -221,7 +231,8 @@ class Search:
             pagination.
 
         Returns:
-            (list | dict | Iterator[list | dict]): List of dicts of project info from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of project info from
+            `libraries.io <https://libraries.io>`_.
         """
 
         return self._call(iterated)(
@@ -256,7 +267,8 @@ class Search:
             pagination.
 
         Returns:
-            (list | dict | Iterator[list | dict]): List of dicts of info about a repository from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of info about a repository from
+            `libraries.io <https://libraries.io>`_.
         """
 
         return self._call(iterated)(
@@ -291,7 +303,8 @@ class Search:
                 pagination.
 
         Returns:
-            (list | dict | Iterator[list | dict]): Dict of repo dependency info from libraries.io.
+            (list | dict | Iterator[list | dict]): Dict of repo dependency info from
+            `libraries.io <https://libraries.io>`_.
         """
 
         return self._call(iterated)(
@@ -326,7 +339,8 @@ class Search:
                 pagination.
 
         Returns:
-            (list | dict | Iterator[list | dict]): List of dicts of projects referencing a repo from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of projects referencing a repo from
+            `libraries.io <https://libraries.io>`_.
         """
 
         return self._call(iterated)(
@@ -348,7 +362,7 @@ class Search:
             user (str): The username.
 
         Returns:
-            (list | dict): Dict of info about user from libraries.io.
+            (list | dict): Dict of info about user from `libraries.io <https://libraries.io>`_.
         """
         return SearchAPI.call(SearchOperationTypes.USER, self.session, host=host, user=user)
 
@@ -372,7 +386,8 @@ class Search:
                 pagination.
 
         Returns:
-           (list | dict | Iterator[list | dict]): List of dicts with info about user repos from libraries.io.
+           (list | dict | Iterator[list | dict]): List of dicts with info about user repos from
+           `libraries.io <https://libraries.io>`_.
         """
         return self._call(iterated)(
             SearchOperationTypes.USER_REPOSITORIES, self.session, host=host, user=user, page=page, per_page=per_page
@@ -398,7 +413,8 @@ class Search:
                 pagination.
 
         Returns:
-            (list | dict | Iterator[list | dict]): List of dicts of user packages info from libraries.io.
+            (list | dict | Iterator[list | dict]): List of dicts of user packages info from
+            `libraries.io <https://libraries.io>`_.
         """
         return self._call(iterated)(
             SearchOperationTypes.USER_PACKAGES, self.session, host=host, user=user, page=page, per_page=per_page
@@ -425,7 +441,7 @@ class Search:
 
         Returns:
             (list | dict | Iterator[list | dict]): List of dicts with user packages contribution info from
-            libraries.io.
+            `libraries.io <https://libraries.io>`_.
         """
         return self._call(iterated)(
             SearchOperationTypes.USER_PACKAGES_CONTRIBUTIONS,
@@ -456,7 +472,7 @@ class Search:
                 pagination.
 
         Returns:
-            (list | dict | Iterator[list | dict]): List of dicts response from libraries.io
+            (list | dict | Iterator[list | dict]): List of dicts response from `libraries.io <https://libraries.io>`_.
         """
         return self._call(iterated)(
             SearchOperationTypes.USER_REPOSITORY_CONTRIBUTIONS,

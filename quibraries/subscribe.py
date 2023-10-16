@@ -8,11 +8,11 @@ from .subscribe_ops import SubscribeOperationTypes
 
 
 class Subscribe:
-    """Class for libraries.io API for changing user's libraries.io subscriptions."""
+    """Class for `libraries.io <https://libraries.io>`_ API for changing user's subscriptions."""
 
     def __init__(self, api_key: str = ""):
         """
-        Constructor responsible for initialising the Libraries.io session.
+        Constructor responsible for initialising the `libraries.io <https://libraries.io>`_ session.
 
         Args:
             api_key (str): The API key to use, if blank - it is expected to be present in the environment.
@@ -30,7 +30,8 @@ class Subscribe:
             per_page (int): The items per page to return, the default is 30.
             iterated (bool): If the request is iterated or not - i.e. returns a consumable iterator.
         Returns:
-           (dict | list | Iterable[dict | list]): Dict with info for each package subscribed to at libraries.io.
+           (dict | list | Iterable[dict | list]): Dict with info for each package subscribed to at
+           `libraries.io <https://libraries.io>`_.
         """
 
         return self._call(iterated)(
@@ -46,7 +47,7 @@ class Subscribe:
         Subscribe to receive notifications about new releases of a project.
 
         Note `include_prerelease` argument might not be working fully; potentially due to a possible bug at
-        libraries.io....? Use with caution.
+        `libraries.io <https://libraries.io>`_....? Use with caution.
 
         Args:
             platform (str): The package manager name (e.g. PyPI).
@@ -90,7 +91,7 @@ class Subscribe:
         Update the options for a subscription.
 
         Note `include_prerelease` argument might not be working fully; potentially due to a bug at
-        libraries.io....? Use with caution.
+        `libraries.io <https://libraries.io>`_....? Use with caution.
 
 
         Args:
