@@ -2,7 +2,7 @@
 Quibraries
 =============
 
-|lint| |coverage|
+|PyPi| |Supported Python versions| |lint| |coverage|
 
 Quibraries is a `Python`_ wrapper for the `libraries.io`_ API which is based on `Pybraries`_.
 Currently the package fully supports the searching functionality, meaning that the full range of available commands
@@ -16,7 +16,7 @@ ___________________________
 The main reason of existence of this package is that `Pybraries`_ is not *thread-safe*.
 Further, the ``API`` key can be provided only as an environment variable, which makes it difficult to change
 during execution. Additionally, is when a query returns multiple pages, in `Pybraries`_ the iteration has to
-happen manually and by the user. This is because the returned object is not ``Iterable``, thus convenient
+happen manually and by the user. This is because the returned object is not :meth:`Iterable`, thus convenient
 "pythonic" constructs cannot be used. The aforementioned reasons (and their associated pain points) sparked the
 creation of this project which aims to offer what `Pybraries`_ does, but also adding these - to us - important
 features.
@@ -77,6 +77,8 @@ This software package is governed by the terms and conditions of the `MIT licens
 
 .. |lint| image:: https://github.com/andylamp/quibraries/actions/workflows/lint.yml/badge.svg
 .. |coverage| image:: ../coverage.svg
+.. |PyPi| image:: https://img.shields.io/pypi/v/quibraries?style=round-square
+.. |Supported Python versions| image:: https://img.shields.io/pypi/pyversions/quibraries?style=round-square
 .. _MIT License: https://github.com/andylamp/quibraries/blob/master/LICENSE
 .. _Contributing: https://quibraries.readthedocs.io/en/latest/CONTRIBUTING.html
 .. _Read the Docs: https://quibraries.readthedocs.io/en/latest/README.html
