@@ -29,8 +29,8 @@ def from_kwargs(*keys: Unpack[ArgumentTypes], **kwargs: dict) -> list:
     try:
         return [
             quote(kwargs[key.value], safe="")  # type: ignore[attr-defined,call-overload]
-            if isinstance(kwargs[key.value], str)
-            else kwargs[key.value]
+            if isinstance(kwargs[key.value], str)  # type: ignore[attr-defined]
+            else kwargs[key.value]  # type: ignore[attr-defined]
             for key in keys
         ]
     except KeyError as k_err:
