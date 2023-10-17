@@ -30,7 +30,7 @@ class LibIOSessionBase:
     Class that implements the `libraries.io <https://libraries.io>`_ session and keeps its state.
     """
 
-    def __init__(self, api_key: str = "", with_pagination: bool = True):
+    def __init__(self, api_key: str = ""):
         """
         Initialises the session using the provided ``API`` key, if any. If an ``API`` key is not provided it is
         assumed that it resides as an environment variable and is accessible.
@@ -38,15 +38,12 @@ class LibIOSessionBase:
         In any other case, an error will be raised when attempting to make a request.
 
         Args:
-            api_key (str): the `libraries.io <https://libraries.io>`_ ``API`` key to be used in the calls.
-            with_pagination (bool): flag that indicates if we'll automatically add pagination.
+            api_key (str): the `libraries.io <https://libraries.io>`_ ``API`` key to be used in the calls..
         """
         # session retry settings
         self._retry_config = Retry(total=3, backoff_factor=0.2, status_forcelist=[500, 502, 503, 504])
         # the libraries.io API key
         self._api_key = os.environ.get("LIBRARIES_API_KEY", None) if not api_key else api_key
-        # set the pagination preferences
-        self._with_pagination = with_pagination
         # create the session
         self._create_session()
 
@@ -268,7 +265,7 @@ class LibIOSession(LibIOSessionBase):
         Make the request to `libraries.io <https://libraries.io>`_ ``API``.
 
         Args:
-            op (str): The action to perform when making the request.
+            op (SearchOperationTypes | SubscribeOperationTypes): The operation to perform when making the request.
             req_type (HttpOperation): Part of the :class:`HttpOperation` enum which can be either get, post, put,
                 or delete.
         Returns:
