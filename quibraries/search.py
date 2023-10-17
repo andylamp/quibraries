@@ -45,7 +45,7 @@ class Search:
         Return information about a project and its versions from a platform (e.g. "PyPi").
 
         Args:
-            platform (str): The package manager (e.g. ""PyPi"").
+            platform (str): The package manager (e.g. "PyPi").
             project (str): The project name.
 
         Returns:

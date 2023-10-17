@@ -1,4 +1,5 @@
 """Module that includes helpers that for querying."""
+from urllib.parse import quote
 
 # compatibility for Python 3.10, these types are included by default from Python 3.11+
 try:
@@ -26,6 +27,6 @@ def from_kwargs(*keys: Unpack[ArgumentTypes], **kwargs: dict) -> list:
         (list): The list with the values for the given keys.
     """
     try:
-        return [kwargs[key.value] for key in keys]  # type: ignore[attr-defined]
+        return [quote(kwargs[key.value], safe="") for key in keys]  # type: ignore[attr-defined]
     except KeyError as k_err:
         raise ArgumentMissingError(f"Encountered missing argument, details: {k_err}") from k_err

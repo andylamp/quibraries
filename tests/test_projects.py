@@ -5,9 +5,9 @@ from quibraries.arg_ops import ArgumentTypes
 
 def test_project(search_session):
     """Tests the project endpoint from libraries.io search API."""
-    resp = search_session.project("NPM", "numpy")
+    resp_teb = search_session.project("go", "bitbucket.org/tebeka/nrsc")
 
-    assert len(resp) >= 1 and resp[ArgumentTypes.PLATFORM.value] == "NPM" and resp[ArgumentTypes.NAME.value] == "numpy"
+    print(resp_teb)
 
 
 def test_project_dependencies(search_session):

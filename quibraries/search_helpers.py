@@ -1,6 +1,7 @@
 """The Search API caller."""
 import logging
 from typing import Iterator
+from urllib.parse import quote
 
 from .arg_ops import ArgumentTypes, TailEndpoints
 from .consts import LB_BASE_API_URI, QB_LOGGER
@@ -97,7 +98,7 @@ class SearchAPI:
 
                 # check if we have any query
                 if ArgumentTypes.QUERY.value in kwargs:
-                    sess_params["q"] = kwargs[ArgumentTypes.QUERY.value]
+                    sess_params["q"] = quote(kwargs[ArgumentTypes.QUERY.value], safe="")
 
                 # check if we have any filters
                 if ArgumentTypes.FILTERS.value in kwargs:
@@ -106,12 +107,13 @@ class SearchAPI:
                     if not isinstance(filters, dict):
                         raise AttributeError("Filters need to be a dictionary of sets of strings.")
 
+                    # parse filters and convert each to the appropriate value that is friendly to URI
                     for flt in filters:
-                        sess_params[flt.value] = filters[flt]
+                        sess_params[flt.value] = {quote(item, safe="") for item in filters[flt]}
 
                 # check if sort is in the params
                 if ArgumentTypes.SORT.value in kwargs:
-                    sess_params[ArgumentTypes.SORT.value] = kwargs[ArgumentTypes.SORT.value].value
+                    sess_params[ArgumentTypes.SORT.value] = quote(kwargs[ArgumentTypes.SORT.value].value, safe="")
 
         return sess_params
 
