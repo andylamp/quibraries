@@ -58,7 +58,7 @@ jobs:
         if: ${{ matrix.python-version != env.min-python }}
         run: |
           # sleep for a bit so we do not hit rate limitations from the API.
-          if [ "${{ matrix.python-version }}" == "3.10 ]; then
+          if [ "${{ matrix.python-version }}" == "3.10" ]; then
             sleep 60
           else
             sleep 100
