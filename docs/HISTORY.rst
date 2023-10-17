@@ -2,6 +2,12 @@
 History
 =======
 
+1.0.7 (2023-10-17)
+------------------
+
+* Release in PyPi.
+* Minor tweaks in typos, link fixes, and other bits.
+
 0.2.0 (2023-10-16)
 ------------------
 
