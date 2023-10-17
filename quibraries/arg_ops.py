@@ -1,4 +1,4 @@
-"""Module that contains the argument types from the functions"""
+"""Module that contains the argument types from the functions."""
 from enum import Enum
 
 
@@ -6,11 +6,11 @@ class ArgumentTypes(Enum):
     """Argument types used with their respective values."""
 
     PLATFORM: str = "platform"
-    """The package platform (e.g. PyPi)."""
+    """The package platform (e.g. "PyPi")."""
     PROJECT: str = "project"
     """The project name."""
     HOST: str = "host"
-    """The host platform (e.g. GitHub)."""
+    """The host platform (e.g. "GitHub")."""
     OWNER: str = "owner"
     """The owner name."""
     REPO: str = "repo"
@@ -32,7 +32,7 @@ class ArgumentTypes(Enum):
 
 
 class TailEndpoints(Enum):
-    """Vantage endpoint constants for the tail of each endpoint as defined by `libraries.io <https://libraries.io>`_"""
+    """Vantage endpoint constants of each endpoint as defined by `libraries.io <https://libraries.io>`_."""
 
     PLATFORMS: str = "platforms"
     """The platforms tail endpoint."""

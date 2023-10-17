@@ -47,10 +47,10 @@ class Subscribe:
         Subscribe to receive notifications about new releases of a project.
 
         Note `include_prerelease` argument might not be working fully; potentially due to a possible bug at
-        `libraries.io <https://libraries.io>`_....? Use with caution.
+        `libraries.io <https://libraries.io>`_...? Use with caution.
 
         Args:
-            platform (str): The package manager name (e.g. PyPI).
+            platform (str): The package manager name (e.g. "PyPi").
             project (str): The package name.
             include_prerelease (bool): If we include prerelease versions.
 
@@ -71,7 +71,7 @@ class Subscribe:
         Check if a user is subscribed to notifications for new project releases.
 
         Args:
-            platform (str): The package manager name (e.g. PyPI).
+            platform (str): The package manager name (e.g. "PyPi").
             project (str): The package name.
         Returns:
             (bool): ``True`` if subscribed to the package indicated, else ``False``.
@@ -91,11 +91,11 @@ class Subscribe:
         Update the options for a subscription.
 
         Note `include_prerelease` argument might not be working fully; potentially due to a bug at
-        `libraries.io <https://libraries.io>`_....? Use with caution.
+        `libraries.io <https://libraries.io>`_...? Use with caution.
 
 
         Args:
-            platform (str): The package manager name (e.g. PyPI).
+            platform (str): The package manager name (e.g. "PyPi").
             project (str): The package name.
             include_prerelease (bool): Include prerelease notifications, by default is ``False``.
 
@@ -116,7 +116,7 @@ class Subscribe:
         Stop receiving release notifications from a project.
 
         Args:
-            platform (str): The package manager name (e.g. PyPI).
+            platform (str): The package manager name (e.g. "PyPi").
             project (str): The package name.
 
         Returns:
@@ -134,8 +134,8 @@ class Subscribe:
     @staticmethod
     def _call(iterated: bool) -> Callable:
         """
-        Nifty little utility to call the appropriate API calling function in case we support both regular and iterable
-        requests.
+        Nifty little utility to call the appropriate ``API`` calling function in case we support both regular and
+        iterable requests.
 
         Args:
             iterated (bool): Flag that indicates which type of callable to return.

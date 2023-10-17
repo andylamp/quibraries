@@ -269,10 +269,10 @@ class LibIOSession(LibIOSessionBase):
 
         Args:
             op (str): The action to perform when making the request.
-            req_type (HttpOperation): Part of the :mod:`HttpOperation` enum which can be either get, post, put,
-            or delete.
+            req_type (HttpOperation): Part of the :class:`HttpOperation` enum which can be either get, post, put,
+                or delete.
         Returns:
-            `(dict | list): Returns the :mod:``json`` encoded response from `libraries.io <https://libraries.io>`_.
+            (dict | list): Returns the :py:mod:`json` encoded response from `libraries.io <https://libraries.io>`_.
         """
         ret: dict | list = {}
         try:
@@ -311,7 +311,7 @@ class LibIOIterableRequest:
 
         Args:
             op (SearchOperationTypes | SubscribeOperationTypes): The action to perform.
-            req_type (HttpOperation): The request type - can only be :ref:`HttpOperation.GET`.
+            req_type (HttpOperation): The request type - can only be :attr:`HttpOperation.GET`.
             from_page (int): Indicates which page we start from, default is 1.
             items_per_page (int): Dictates how many items should be returned per page, default is 30.
             api_key (str): The ``API`` key to use.

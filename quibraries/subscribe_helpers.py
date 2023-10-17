@@ -31,8 +31,8 @@ class SubscribeAPI:
             op (SubscribeOperationTypes): The operation type.
             sess (LibIOSessionBase): The session to use.
             req_type (HttpOperation): The ``HTTP`` operation type.
-            *args (): variadic positional arguments.
-            **kwargs (): variadic keyword arguments.
+            *args (): Variadic positional arguments.
+            **kwargs (): Variadic keyword arguments.
 
         Returns:
             (list | dict): The response should contain dicts or list of dicts as per official documentation. The
@@ -61,10 +61,10 @@ class SubscribeAPI:
 
         Args:
             op (SubscribeOperationTypes): The operation type.
-            sess (LibIOSessionBase): the session to use.
+            sess (LibIOSessionBase): The session to use.
             req_type (HttpOperation): The ``HTTP`` operation type.
-            *args (): variadic positional arguments.
-            **kwargs (): variadic keyword arguments.
+            *args (): Variadic positional arguments.
+            **kwargs (): Variadic keyword arguments.
 
         Returns:
             (Iterator[list | dict]): Returns a consumable iterator of the response from
@@ -101,27 +101,27 @@ class SubscribeAPI:
         Handler which is responsible for parsing and configuring the session variables specific to this query.
 
         Args:
-            op (SubscribeOperationTypes): the subscribe API operation to perform.
-            sess_params (dict): the session parameters.
-            **kwargs (): the variadic keyword arguments.
+            op (SubscribeOperationTypes): The subscribe ``API`` operation to perform.
+            sess_params (dict): The session parameters.
+            **kwargs (): The variadic keyword arguments.
 
         Returns:
-            sess_params (dict): the finalised parameter dictionary for the request.
+            sess_params (dict): The finalised parameter dictionary for the request.
         """
         return sess_params
 
     @staticmethod
     def _uri_handler(op: SubscribeOperationTypes, *args, **kwargs) -> str:
         """
-        The URI handler, which transforms arguments into the desired URI to be used when calling the API.
+        The URI handler, which transforms arguments into the desired URI to be used when calling the ``API``.
 
         Args:
-            op (SubscribeOperationTypes): the subscribe ``API`` operation to perform.
-            *args ():
-            **kwargs (): the variadic keyword arguments.
+            op (SubscribeOperationTypes): The subscribe ``API`` operation to perform.
+            *args (): The variadic positional arguments.
+            **kwargs (): The variadic keyword arguments.
 
         Returns:
-            (str): the final URI based on the received arguments.
+            (str): The final ``URI`` based on the received arguments.
         """
         uri_list: list[str] = [LB_SUBSCRIPTIONS_API_URI]
 

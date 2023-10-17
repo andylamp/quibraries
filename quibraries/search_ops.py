@@ -35,10 +35,10 @@ class SearchFilterTypes(Enum):
 
 
 class SearchOperationTypes(Enum):
-    """The Search operation types enumeration as provided by libraries.io."""
+    """The Search operation types enumeration as provided by `libraries.io <https://libraries.io>`_."""
 
     PLATFORMS: str = "platforms"
-    """Returns the platforms available by libraries.io."""
+    """Returns the platforms available by `libraries.io <https://libraries.io>`_."""
     PROJECT: str = "project"
     """Searches for a specific project details."""
     PROJECT_DEPENDENCIES: str = "project-dependencies"
