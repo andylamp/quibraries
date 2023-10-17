@@ -52,7 +52,7 @@ jobs:
         if: ${{ matrix.python-version == env.min-python }}
         run: |
           # sleep for a minute
-          sleep(60)
+          sleep 60
       # Python linting phase.
       - name: Running pre-commit hooks...
         uses: pre-commit/action@v3.0.0
