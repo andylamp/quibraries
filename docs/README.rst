@@ -16,7 +16,7 @@ ___________________________
 The main reason of existence of this package is that `Pybraries`_ is not *thread-safe*.
 Further, the ``API`` key can be provided only as an environment variable, which makes it difficult to change
 during execution. Additionally, is when a query returns multiple pages, in `Pybraries`_ the iteration has to
-happen manually and by the user. This is because the returned object is not :meth:`Iterable`, thus convenient
+happen manually and by the user. This is because the returned object is not ``Iterable``, thus convenient
 "pythonic" constructs cannot be used. The aforementioned reasons (and their associated pain points) sparked the
 creation of this project which aims to offer what `Pybraries`_ does, but also adding these - to us - important
 features.
