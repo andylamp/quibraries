@@ -54,11 +54,15 @@ jobs:
       - name: Running shell check...
         uses: ludeeus/action-shellcheck@master
       # Sleep for one of the runs, so we do not reach the API limits.
-      - name: Sleep a bit for the Python 3.11 so we do not hit API limits
-        if: ${{ matrix.python-version == env.min-python }}
+      - name: Sleep a bit for Python 3.11 and 3.12 runs so we do not hit API limits
+        if: ${{ matrix.python-version != env.min-python }}
         run: |
-          # sleep for a minute
-          sleep 60
+          # sleep for a bit so we do not hit rate limitations from the API.
+          if [ "${{ matrix.python-version }}" == "3.10 ]; then
+            sleep 60
+          else
+            sleep 100
+          fi
       # Perform testing with pytest while generating coverage data.
       - name: Perform testing with pytest including coverage
         env:
