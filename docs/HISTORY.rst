@@ -2,6 +2,12 @@
 History
 =======
 
+1.0.9 (2023-10-18)
+------------------
+
+* Fix regression with special alphanumeric parameter contents.
+* Minor tweaks in typos, link fixes, and other bits.
+
 1.0.7 (2023-10-17)
 ------------------
 

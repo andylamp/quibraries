@@ -27,6 +27,11 @@ def from_kwargs(*keys: Unpack[ArgumentTypes], **kwargs: dict) -> list:
         (list): The list with the values for the given keys.
     """
     try:
-        return [quote(kwargs[key.value], safe="") for key in keys]  # type: ignore[attr-defined]
+        return [
+            quote(kwargs[key.value], safe="")  # type: ignore[attr-defined,call-overload]
+            if isinstance(kwargs[key.value], str)
+            else kwargs[key.value]
+            for key in keys
+        ]
     except KeyError as k_err:
         raise ArgumentMissingError(f"Encountered missing argument, details: {k_err}") from k_err
