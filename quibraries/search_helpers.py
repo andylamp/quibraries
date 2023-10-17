@@ -57,7 +57,7 @@ class SearchAPI:
         Args:
             op (SearchOperationTypes): The operation type.
             sess (LibIOSessionBase): The session to use.
-            **kwargs (): variadic keyword arguments.
+            **kwargs (): Variadic keyword arguments.
 
         Returns:
             (Iterator[list | dict]): Returns a consumable iterator of the response from

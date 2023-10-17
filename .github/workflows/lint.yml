@@ -47,18 +47,18 @@ jobs:
           python -m pip install -U pip
           if [ -f requirements.txt ]; then pip install -r ./requirements.txt; fi
           sudo snap install shfmt
-      # Sleep for one of the runs, so we do not reach the API limits.
-      - name: Sleep a bit for the Python 3.11 so we do not hit API limits
-        if: ${{ matrix.python-version == env.min-python }}
-        run: |
-          # sleep for a minute
-          sleep 60
       # Python linting phase.
       - name: Running pre-commit hooks...
         uses: pre-commit/action@v3.0.0
       # Shell linting phase.
       - name: Running shell check...
         uses: ludeeus/action-shellcheck@master
+      # Sleep for one of the runs, so we do not reach the API limits.
+      - name: Sleep a bit for the Python 3.11 so we do not hit API limits
+        if: ${{ matrix.python-version == env.min-python }}
+        run: |
+          # sleep for a minute
+          sleep 60
       # Perform testing with pytest while generating coverage data.
       - name: Perform testing with pytest including coverage
         env:
