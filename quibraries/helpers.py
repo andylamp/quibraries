@@ -1,4 +1,5 @@
 """Module that includes helpers that for querying."""
+
 from urllib.parse import quote
 
 # compatibility for Python 3.10, these types are included by default from Python 3.11+
@@ -28,9 +29,11 @@ def from_kwargs(*keys: Unpack[ArgumentTypes], **kwargs: dict) -> list:
     """
     try:
         return [
-            quote(kwargs[key.value], safe="")  # type: ignore[attr-defined,call-overload]
-            if isinstance(kwargs[key.value], str)  # type: ignore[attr-defined]
-            else kwargs[key.value]  # type: ignore[attr-defined]
+            (
+                quote(kwargs[key.value], safe="")  # type: ignore[attr-defined,call-overload]
+                if isinstance(kwargs[key.value], str)  # type: ignore[attr-defined]
+                else kwargs[key.value]
+            )  # type: ignore[attr-defined]
             for key in keys
         ]
     except KeyError as k_err:

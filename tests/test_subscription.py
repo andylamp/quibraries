@@ -1,4 +1,5 @@
 """Tests that evaluate the Subscribe API."""
+
 from typing import Iterator
 
 

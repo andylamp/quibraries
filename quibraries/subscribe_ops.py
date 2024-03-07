@@ -1,4 +1,5 @@
 """`Libraries.io <https://libraries.io>`_ Subscribe ``API`` operations."""
+
 from enum import Enum
 
 

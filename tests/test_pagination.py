@@ -1,4 +1,5 @@
 """ Tests that evaluate the pagination functionality."""
+
 from quibraries import Search, SearchFilterTypes, SearchSortTypes
 
 

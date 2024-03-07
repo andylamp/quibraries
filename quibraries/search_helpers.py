@@ -1,4 +1,5 @@
 """The Search API caller."""
+
 import logging
 from typing import Iterator
 from urllib.parse import quote

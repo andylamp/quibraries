@@ -1,4 +1,5 @@
 """Module that tests projects search API endpoints."""
+
 from quibraries import SearchFilterTypes, SearchSortTypes
 from quibraries.arg_ops import ArgumentTypes
 

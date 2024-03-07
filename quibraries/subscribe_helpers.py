@@ -1,4 +1,5 @@
 """Module that includes the subscribe API helpers."""
+
 import logging
 from typing import Iterator
 

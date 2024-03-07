@@ -1,11 +1,12 @@
 """The setup module."""
+
 import os
 
 from setuptools import find_packages, setup
 
 # variable that we set as the version of the library, this is done for easier extraction from the
 # actions pipeline.
-VERSION: str = "1.0.9"
+VERSION: str = "1.1.0"
 
 # get the current path
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -36,7 +37,7 @@ if __name__ == "__main__":
         packages=find_packages(),
         install_requires=requirements,
         classifiers=[
-            "Development Status :: 4 - Beta",
+            "Development Status :: 5 - Production/Stable",
             "Programming Language :: Python :: 3.10",
             "Programming Language :: Python :: 3.11",
             "Programming Language :: Python :: 3.12",

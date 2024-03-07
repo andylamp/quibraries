@@ -1,4 +1,5 @@
 """Module that includes the Subscribe ``API`` wrapper."""
+
 from typing import Callable, Iterator
 
 from .consts import QB_DEFAULT_PAGE, QB_DEFAULT_PER_PAGE

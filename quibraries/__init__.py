@@ -2,6 +2,7 @@
 Contains a rundown of the functionality exposed by :mod:`quibraries`, including exposes modules and classes along with
 their definitions, arguments, and types.
 """
+
 import logging
 import os
 from typing import TypeAlias

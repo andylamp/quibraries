@@ -1,4 +1,5 @@
 """Module that includes generic fixtures used for testing."""
+
 import logging
 import os
 from typing import Any

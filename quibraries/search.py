@@ -1,4 +1,5 @@
 """Module that contains the wrapper around the Search ``API`` for `libraries.io <https://libraries.io>`_."""
+
 from typing import Callable, Iterator
 
 from .consts import QB_DEFAULT_PAGE, QB_DEFAULT_PER_PAGE, QB_DEFAULT_VERSION

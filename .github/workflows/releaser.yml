@@ -40,7 +40,7 @@ jobs:
           echo "version_tag=${version_tag}" >> ${GITHUB_ENV}
       # Check if the release tag already exists
       - name: Check if the release tag already exists
-        uses: mukunku/tag-exists-action@v1.4.0
+        uses: mukunku/tag-exists-action@v1.6.0
         id: checkTag
         with:
           tag: ${{ env.version_tag }}
@@ -54,7 +54,7 @@ jobs:
           fi
       # Set up the python environment for releasing
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       # Install the pypa/build package, which allows us to actually build the packages
@@ -67,7 +67,7 @@ jobs:
           python3 -m build
       # Sign the dists with sigstore
       - name: Sign the distributions with Sigstore
-        uses: sigstore/gh-action-sigstore-python@v2.1.0
+        uses: sigstore/gh-action-sigstore-python@v2.1.1
         with:
           inputs: >-
             ./dist/*.tar.gz

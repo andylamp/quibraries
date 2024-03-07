@@ -1,4 +1,5 @@
 """Module that contains the argument types from the functions."""
+
 from enum import Enum
 
 
